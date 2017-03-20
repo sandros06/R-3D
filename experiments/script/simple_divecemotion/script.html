@@ -1,0 +1,23 @@
+Acceleration x : <p id="p1">nan</p>
+Acceleration y : <p id="p2">nan</p>
+Acceleration z : <p id="p3">nan</p>
+Rotation alpha : <p id="p4">nan</p>
+Rotation beta : <p id="p5">nan</p>
+Rotation gamma : <p id="p6">nan</p> 
+
+<script type="text/javascript">
+   /*  un script de plusieurs lignes */ 
+window.addEventListener('devicemotion', function(event) {
+  document.getElementById("p1").innerHTML = event.acceleration.x + ' m/s2';
+  document.getElementById("p2").innerHTML = event.acceleration.y + ' m/s2';
+  document.getElementById("p3").innerHTML = event.acceleration.z + ' m/s2';
+  var rates = instanceOfDeviceMotionEvent.rotationRate;
+  
+});
+ window.addEventListener("deviceorientation", function(event) {
+          // process event.alpha, event.beta and event.gamma
+          document.getElementById("p4").innerHTML = event.alpha + ' deg';
+  document.getElementById("p5").innerHTML = event.beta + ' deg';
+  document.getElementById("p6").innerHTML = event.gamma + ' deg';
+      }, true);
+</script>
