@@ -104,12 +104,22 @@
          *      HUB
          *
          */
-
+        var disj  = true;
+        var rotationx = [];
         var hub = io.connect(window.location.origin);
         hub.on("deviceOrientation", function (event) {
             plane.rotation.x = 2 * Math.PI * event.beta / 360;
             plane.rotation.y = 2 * Math.PI * event.gamma / 360;
             plane.rotation.z = 2 * Math.PI * event.alpha / 360;
+
+            if(rotationx.length >= 500 && disj){
+
+                rotationx.push(plane.rotation.x);
+
+            }else{
+                disj = false;
+                console.log(rotationx);
+            }
         })
         hub.on("deviceMotion", function (event) {
             //console.log(event)
