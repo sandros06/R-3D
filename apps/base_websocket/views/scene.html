@@ -5,115 +5,15 @@
     <meta charset="utf-8" />
     <title> Projet R&D - scene </title>
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
     <!-- https://www.w3schools.com/w3css/ -->
 </head>
 <body class="w3-display-container" style="height:100%">
     <div class="w3-display-middle" id="container"></div>
-    <script src="/javascripts/socket.io.min.js"></script>
-    <script src="/javascripts/three.min.js"></script>
-    <script>
-
-        /*
-         *
-         *      SCENE
-         *      from https://aerotwist.com/tutorials/getting-started-with-three-js/
-         */
-
-
-        // Set the scene size.
-        const WIDTH = 800;
-        const HEIGHT = 600;
-
-        // Set some camera attributes.
-        const VIEW_ANGLE = 45;
-        const ASPECT = WIDTH / HEIGHT;
-        const NEAR = 0.1;
-        const FAR = 10000;
-
-        // Get the DOM element to attach to
-        const container =
-            document.querySelector('#container');
-
-        // Create a WebGL renderer, camera
-        // and a scene
-        const renderer = new THREE.WebGLRenderer(/*{ alpha: true, antialias: true  }*/);
-        //renderer.setClearColor(0xffffff, 0);
-        const camera =
-            new THREE.PerspectiveCamera(
-                VIEW_ANGLE,
-                ASPECT,
-                NEAR,
-                FAR
-            );
-
-        const scene = new THREE.Scene();
-
-        // Add the camera to the scene.
-        scene.add(camera);
-
-        // Start the renderer.
-        renderer.setSize(WIDTH, HEIGHT);
-
-        // Attach the renderer-supplied
-        // DOM element.
-        container.appendChild(renderer.domElement);
-
-
-        // Set up the plane vars
-        const PLANE_W = 50;
-        const PLANE_H = 20;
-
-        // Create a new mesh with
-        // plane geometry - we will cover
-        // create the plane's material
-        const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000, side: THREE.DoubleSide });
-        const plane = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeMaterial);
-
-        // Move the Sphere back in Z so we
-        // can see it.
-        plane.position.z = -300;
-
-        // Finally, add the sphere to the scene.
-        scene.add(plane);
-
-        // create a point light
-        const pointLight = new THREE.PointLight(0xFFFFFF);
-
-        // set its position
-        //pointLight.position.x = 10;
-        //pointLight.position.y = 50;
-        //pointLight.position.z = 130;
-
-        // add to the scene
-        scene.add(pointLight);
-
-        function update() {
-            // Draw!
-            renderer.render(scene, camera);
-
-            // Schedule the next frame.
-            requestAnimationFrame(update);
-        }
-
-        // Schedule the first frame.
-        requestAnimationFrame(update);
-
-
-        /*
-         *
-         *      HUB
-         *
-         */
-
-        var hub = io.connect(window.location.origin);
-        hub.on("deviceOrientation", function (event) {
-            plane.rotation.x = 2 * Math.PI * event.beta / 360;
-            plane.rotation.y = 2 * Math.PI * event.gamma / 360;
-            plane.rotation.z = 2 * Math.PI * event.alpha / 360;
-        })
-        hub.on("deviceMotion", function (event) {
-            //console.log(event)
-        })
-    </script>
+    <script src="/javascripts/modules/socket.io.min.js"></script>
+    <script src="/javascripts/modules/three.min.js"></script>
+    <script src="/javascripts/scripts/scene.js">    </script>
 </body>
 </html>
