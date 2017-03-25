@@ -9,15 +9,8 @@
 </head>
 <body class="w3-display-container" style="height:100%">
     <div class="w3-display-middle" id="container"></div>
-    Acceleration x : <p id="p1">nan</p>
-Acceleration y : <p id="p2">nan</p>
-Acceleration z : <p id="p3">nan</p>
-Rotation alpha : <p id="p4">nan</p>
-Rotation beta : <p id="p5">nan</p>
-Rotation gamma : <p id="p6">nan</p> 
     <script src="/javascripts/socket.io.min.js"></script>
     <script src="/javascripts/three.min.js"></script>
-
     <script>
 
         /*
@@ -115,51 +108,15 @@ Rotation gamma : <p id="p6">nan</p>
          *      HUB
          *
          */
-        var disj  = true;
-        var rotationx = [];
-        var rotationy = [];
-        var rotationz = [];
 
         var hub = io.connect(window.location.origin);
         hub.on("deviceOrientation", function (event) {
             cube.rotation.x = 2 * Math.PI * event.beta / 360;
             cube.rotation.y = 2 * Math.PI * event.gamma / 360;
             cube.rotation.z = 2 * Math.PI * event.alpha / 360;
-            
-            if(rotationx.length >= 500 && disj){
-                disj = false;
-                document.getElementById("p5").innerHTML = rotationx;
-                document.getElementById("p6").innerHTML = rotationy;
-                document.getElementById("p4").innerHTML = rotationz;
-
-            }else{
-                rotationx.push(cube.rotation.x);
-                rotationy.push(cube.rotation.y);
-                rotationz.push(cube.rotation.z);
-
-
-            }
         })
-
-        var disj2  = true;
-        var ax = [];
-        var ay = [];
-        var az = [];
         hub.on("deviceMotion", function (event) {
-            if(ax.length >= 500 && disj){
-                disj2 = false;
-                document.getElementById("p1").innerHTML = ax;
-                document.getElementById("p2").innerHTML = ay;
-                document.getElementById("p3").innerHTML = az;
-
-            }else{
-                ax.push(event.acceleration.x);
-                ay.push(event.acceleration.y);
-                az.push(event.acceleration.z);
-
-
-            }
-            
+            //console.log(event)
         })
     </script>
 </body>
