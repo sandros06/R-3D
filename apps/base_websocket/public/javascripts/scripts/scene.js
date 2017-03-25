@@ -45,21 +45,25 @@ container.appendChild(renderer.domElement);
 
 
 // Set up the plane vars
-const PLANE_W = 50;
-const PLANE_H = 20;
+//const PLANE_W = 50;
+//const PLANE_H = 20;
+const CUBE_SIDE = 60;
 
 // Create a new mesh with
 // plane geometry - we will cover
 // create the plane's material
-const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000, side: THREE.DoubleSide });
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeMaterial);
+
+//const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000, side: THREE.DoubleSide });
+//const plane = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeMaterial);
+const meshMaterial = new THREE.MeshLambertMaterial({ color: 0x2C75FF });
+const cube = new THREE.Mesh(new THREE.BoxGeometry(CUBE_SIDE, CUBE_SIDE, CUBE_SIDE), meshMaterial);
 
 // Move the Sphere back in Z so we
 // can see it.
-plane.position.z = -300;
+cube.position.z = -300;
 
 // Finally, add the sphere to the scene.
-scene.add(plane);
+scene.add(cube);
 
 // create a point light
 const pointLight = new THREE.PointLight(0xFFFFFF);
@@ -92,9 +96,9 @@ requestAnimationFrame(update);
 
 var hub = io.connect(window.location.origin);
 hub.on("deviceOrientation", function (event) {
-    plane.rotation.x = 2 * Math.PI * event.beta / 360;
-    plane.rotation.y = 2 * Math.PI * event.gamma / 360;
-    plane.rotation.z = 2 * Math.PI * event.alpha / 360;
+    cube.rotation.x = 2 * Math.PI * event.beta / 360;
+    cube.rotation.y = 2 * Math.PI * event.gamma / 360;
+    cube.rotation.z = 2 * Math.PI * event.alpha / 360;
 })
 hub.on("deviceMotion", function (event) {
     //console.log(event)
