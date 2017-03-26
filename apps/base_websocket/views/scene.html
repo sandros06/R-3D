@@ -9,11 +9,38 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <!-- https://www.w3schools.com/w3css/ -->
+
+    <style>
+        #graph {
+            width: 300px;
+            height: 200px;
+
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+
+            opacity: 0.5;
+        }
+
+        #graph:hover {
+            opacity: 1.0;
+        }
+
+        #container {
+            width: 800px;
+            height: 600px;
+
+            position: relative;
+        }
+    </style>
 </head>
 <body class="w3-display-container" style="height:100%">
-    <div class="w3-display-middle" id="container"></div>
+    <div class="w3-display-middle" id="container">
+        <canvas id="graph" width="300" height="200"></canvas>
+    </div>
     <script src="/javascripts/modules/socket.io.min.js"></script>
     <script src="/javascripts/modules/three.min.js"></script>
-    <script src="/javascripts/scripts/scene.js">    </script>
+    <script src="/javascripts/modules/smoothie.js"></script>
+    <script src="/javascripts/scripts/scene.js"></script>
 </body>
 </html>
