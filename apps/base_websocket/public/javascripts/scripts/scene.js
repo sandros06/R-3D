@@ -89,6 +89,24 @@ requestAnimationFrame(update);
 
 
 /*
+ *      GRAPH
+ */
+
+var graph = new SmoothieChart();
+
+graph.streamTo(document.getElementById('graph'));
+
+var rotLines = {
+    x: new TimeSeries(),
+    y: new TimeSeries(),
+    z: new TimeSeries()
+};
+
+ graph.addTimeSeries(rotLines.x, {strokeStyle: '#ff0000'});
+ graph.addTimeSeries(rotLines.y, {strokeStyle: '#00ff00'});
+ graph.addTimeSeries(rotLines.z, {strokeStyle: '#0000ff'});
+
+/*
  *
  *      HUB
  *
@@ -99,7 +117,12 @@ hub.on("deviceOrientation", function (event) {
     cube.rotation.x = 2 * Math.PI * event.beta / 360;
     cube.rotation.y = 2 * Math.PI * event.gamma / 360;
     cube.rotation.z = 2 * Math.PI * event.alpha / 360;
-})
+
+    rotLines.x.append(new Date().getTime(), event.beta);
+    rotLines.y.append(new Date().getTime(), event.gamma);
+    rotLines.z.append(new Date().getTime(), event.alpha);
+});
+
 hub.on("deviceMotion", function (event) {
-    //console.log(event)
-})
+     //console.log(event)
+});
