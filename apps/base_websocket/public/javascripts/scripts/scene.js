@@ -55,7 +55,7 @@ const CUBE_SIDE = 60;
 
 //const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000, side: THREE.DoubleSide });
 //const plane = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeMaterial);
-const meshMaterial = new THREE.MeshLambertMaterial({ color: 0x2C75FF });
+const meshMaterial = new THREE.MeshLambertMaterial({ color: 0xFDEE00 });
 const cube = new THREE.Mesh(new THREE.BoxGeometry(CUBE_SIDE, CUBE_SIDE, CUBE_SIDE), meshMaterial);
 
 // Move the Sphere back in Z so we
@@ -64,6 +64,10 @@ cube.position.z = -300;
 
 // Finally, add the sphere to the scene.
 scene.add(cube);
+var cubeAxis = new THREE.AxisHelper(80);
+cube.add(cubeAxis);
+
+
 
 // create a point light
 const pointLight = new THREE.PointLight(0xFFFFFF);
@@ -75,6 +79,7 @@ const pointLight = new THREE.PointLight(0xFFFFFF);
 
 // add to the scene
 scene.add(pointLight);
+
 
 function update() {
     // Draw!
