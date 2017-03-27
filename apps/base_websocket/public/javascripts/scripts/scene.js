@@ -99,7 +99,7 @@ requestAnimationFrame(update);
 
 var graph = new SmoothieChart();
 
-graph.streamTo(document.getElementById('graph'));
+graph.streamTo(document.getElementById('graphCanvas'));
 
 var rotLines = {
     x: new TimeSeries(),
