@@ -1,19 +1,18 @@
 {
-  "name": "R-3D",
-  "version": "0.0.1",
+  "name": "base-design",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./server.js"
-  },
-  "description": "R-3D",
-  "author": {
-    "name": "gfi",
-    "email": ""
+    "start": "node ./bin/www"
   },
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "debug": "^2.6.3",
-    "express": "^4.15.2",
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.0",
+    "express": "~4.14.1",
+    "morgan": "~1.7.0",
+    "pug": "~2.0.0-beta10",
+    "serve-favicon": "~2.3.2",
     "hbs": "^4.0.1",
     "socket.io": "^1.7.3",
     "bootstrap": "~3.3.7",

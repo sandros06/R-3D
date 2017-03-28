@@ -1,11 +1,30 @@
 body {
+  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+
 a {
-  color: #00b7ff;
+  color: #00B7FF;
 }
 
 
-.startst{
-	padding: 40px 15px;
+#graph {
+    width: 300px;
+    height: 200px;
+
+    position: absolute;
+
+
+    opacity: 0.5;
+}
+
+#graph:hover {
+    opacity: 1.0;
+}
+
+#containere {
+    width: 800px;
+    height: 600px;
+
+    position: relative;
 }
