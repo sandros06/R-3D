@@ -10,6 +10,10 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var mobile = require('./routes/mobile');
 var scene = require('./routes/scene');
+var mobile_sol1 = require('./routes/mobile_sol1');
+var mobile_sol2 = require('./routes/mobile_sol2');
+
+
 
 var app = express();
 
@@ -35,6 +39,9 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/mobile', mobile);
 app.use('/scene', scene);
+app.use('/mobile_sol1', mobile_sol1);
+app.use('/mobile_sol2', mobile_sol2);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
