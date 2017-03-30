@@ -28,3 +28,15 @@ a {
 
     position: relative;
 }
+
+.row.espace-image{
+    margin-top: 50px;
+}
+
+img.img-responsive.button-img{
+    display:block;
+    margin:auto;
+    border-color:grey;
+    border-width:2px; 
+    border-style:outset;
+}
