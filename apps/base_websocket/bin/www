@@ -64,6 +64,10 @@ hub.on('connection', function (socket) {
     socket.on('solution', function (event) {
         socket.broadcast.emit('solution', event);
     });
+
+    socket.on('deviceNipple', function (event) {
+        socket.broadcast.emit('deviceNipple', event);
+    });
 });
 
 

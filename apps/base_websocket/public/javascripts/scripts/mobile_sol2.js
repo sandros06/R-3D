@@ -47,6 +47,10 @@ var els = {
 
 joystick.on('move', function (evt, nipple) {
 	debug(nipple);
+	hub.emit("deviceNipple", {
+	    force : nipple.force,
+	    angleRad : nipple.angle.radian
+    });
 }).on('end', function (evt, nipple) {
 	console.log("noo");
 });
