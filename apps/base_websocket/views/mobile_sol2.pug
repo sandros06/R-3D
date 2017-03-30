@@ -4,3 +4,8 @@ block content
   script(src='/javascripts/modules/socket.io.min.js')
   script(src='/javascripts/scripts/mobile.js')
   script(src='/javascripts/scripts/alert.js')
+  script.
+    var hub = io.connect(window.location.origin);
+    hub.emit("solution", {
+    number : 2
+    });

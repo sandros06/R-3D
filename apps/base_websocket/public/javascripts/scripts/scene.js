@@ -126,6 +126,14 @@ var rotLines = {
 
 var hub = io.connect(window.location.origin);
 
+hub.on("solution", function (event)  {
+    $(document).trigger("add-alerts", {
+      message: "La solution "+event.number + " a été activé",
+      priority: "info"
+    });
+});
+
+
 hub.on("pingScene", function (event)  {
     if(event.return){
         $(document).trigger("add-alerts", {
