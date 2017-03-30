@@ -38,12 +38,27 @@ server.on('listening', onListening);
 //https://openclassrooms.com/courses/des-applications-ultra-rapides-avec-node-js/socket-io-passez-au-temps-reel
 var hub = require('socket.io')(server);
 hub.on('connection', function (socket) {
+
+
+
     socket.on('deviceOrientation', function ( event ) {
         socket.broadcast.emit('deviceOrientation', event );
     });
     
     socket.on('deviceMotion', function (event) {
         socket.broadcast.emit('deviceMotion', event);
+    });
+
+    socket.on('noSupported', function (event) {
+        socket.broadcast.emit('noSupported', event);
+    });
+
+    socket.on('pingScene', function (event) {
+        socket.broadcast.emit('pingScene', event);
+    });
+
+    socket.on('pingMobile', function (event) {
+        socket.broadcast.emit('pingMobile', event);
     });
 });
 
