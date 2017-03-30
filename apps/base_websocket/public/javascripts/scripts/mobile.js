@@ -1,67 +1,84 @@
 //https://www.alsacreations.com/tuto/lire/1501-api-device-orientation-motion-acceleration.html
+
 var hub = io.connect(window.location.origin);
+
+hub.emit("pingScene", {
+    return : true
+});
+
+
+
+function sendNoSupported(type) {
+
+     $(document).trigger("add-alerts", {
+      message: "Le navigateur ne supporte pas le capteur suivant "+type,
+      priority: "error"
+    });
+    hub.emit("noSupported", {
+            type : type
+        });
+}
+
+
+
+
 if (window.DeviceOrientationEvent) {
     window.addEventListener("deviceorientation", function (event) {
-        hub.emit("deviceOrientation", {
-            alpha: event.alpha,
-            beta: event.beta,
-            gamma: event.gamma
-        });
+        /* TODO check frequence of send data */ 
+
+        if(event.alpha != null && event.beta != null && event.gamma != null){
+           hub.emit("deviceOrientation", {
+                alpha: event.alpha,
+                beta: event.beta,
+                gamma: event.gamma
+            }); 
+       }else{
+
+            sendNoSupported("deviceOrientation");
+       }
+        
+
     }, false);
 } else {
-    // Le navigateur ne supporte pas l'événement deviceorientation
+    sendNoSupported("deviceOrientation");
 }
+
 if (window.DeviceMotionEvent) {
     window.addEventListener("devicemotion", function (event) {
-        hub.emit("deviceMotion", {
-            accelerationIncludingGravity: {
-                x: event.accelerationIncludingGravity.x,
-                y: event.accelerationIncludingGravity.y,
-                z: event.accelerationIncludingGravity.z
-            },
-            acceleration: {
-                x: event.acceleration.x,
-                y: event.acceleration.y,
-                z: event.acceleration.z
-            }
-        });
+        if(event.acceleration.x != null && event.acceleration.y != null && event.acceleration.z != null){
+              hub.emit("deviceMotion", {
+                accelerationIncludingGravity: {
+                    x: event.accelerationIncludingGravity.x,
+                    y: event.accelerationIncludingGravity.y,
+                    z: event.accelerationIncludingGravity.z
+                },
+                acceleration: {
+                    x: event.acceleration.x,
+                    y: event.acceleration.y,
+                    z: event.acceleration.z
+                }
+            });  
+          }else{
+
+            sendNoSupported("deviceMotion");
+          }
+        
     }, false);
 } else {
-    // Le navigateur ne supporte pas l'événement deviceorientation
+   
+    sendNoSupported("deviceMotion");
 }
-// Set the scene size.
-const WIDTH = 400;
-const HEIGHT = 300;
 
-// Set some camera attributes.
-const VIEW_ANGLE = 45;
-const ASPECT = WIDTH / HEIGHT;
-const NEAR = 0.1;
-const FAR = 10000;
+/*
+ *
+ *      HUB
+ *
+ */
 
-// Get the DOM element to attach to
-const container =
-    document.querySelector('#container');
 
-// Create a WebGL renderer, camera
-// and a scene
-const renderer = new THREE.WebGLRenderer();
-const camera =
-    new THREE.PerspectiveCamera(
-        VIEW_ANGLE,
-        ASPECT,
-        NEAR,
-        FAR
-    );
-
-const scene = new THREE.Scene();
-
-// Add the camera to the scene.
-scene.add(camera);
-
-// Start the renderer.
-renderer.setSize(WIDTH, HEIGHT);
-
-// Attach the renderer-supplied
-// DOM element.
-container.appendChild(renderer.domElement);
+hub.on("pingMobile", function (event)  {
+    $(document).trigger("add-alerts", {
+      message: "Connexion établi avec la scène",
+      priority: "info"
+    });
+});

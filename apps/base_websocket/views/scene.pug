@@ -1,5 +1,6 @@
 extends layout
 block content
+    div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
     #container
       #graph
         canvas(style='',id='graphCanvas', width='300', height='200')
@@ -7,3 +8,4 @@ block content
     script(src='/javascripts/modules/three.min.js')
     script(src='/javascripts/modules/smoothie.js')
     script(src='/javascripts/scripts/scene.js')
+    script(src='/javascripts/scripts/alert.js')

@@ -19,6 +19,8 @@ const FAR = 10000;
 const container =
     document.querySelector('#container');
 
+
+
 // Create a WebGL renderer, camera
 // and a scene
 const renderer = new THREE.WebGLRenderer(/*{ alpha: true, antialias: true  }*/);
@@ -117,7 +119,33 @@ var rotLines = {
  *
  */
 
+
+
+// Get the DOM element to attach to
+
+
 var hub = io.connect(window.location.origin);
+
+hub.on("pingScene", function (event)  {
+    if(event.return){
+        $(document).trigger("add-alerts", {
+          message: "Connexion établi avec le mobile",
+          priority: "info"
+        });
+
+        hub.emit("pingMobile", {
+                msg : "ok"
+            }); 
+    }
+});
+
+hub.on("noSupported", function (event)  {
+    $(document).trigger("add-alerts", {
+      message: "Le navigateur ne supporte pas le capteur suivant "+event.type,
+      priority: "error"
+    });
+});
+
 hub.on("deviceOrientation", function (event) {
     cube.rotation.x = 2 * Math.PI * event.beta / 360;
     cube.rotation.y = 2 * Math.PI * event.gamma / 360;
@@ -131,3 +159,5 @@ hub.on("deviceOrientation", function (event) {
 hub.on("deviceMotion", function (event) {
      //console.log(event)
 });
+
+
