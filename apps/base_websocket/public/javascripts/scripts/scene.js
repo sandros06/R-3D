@@ -1,98 +1,96 @@
- /*
- *
- *      SCENE
- *      from https://aerotwist.com/tutorials/getting-started-with-three-js/
- */
 
 
-// Set the scene size.
-const WIDTH = 800;
-const HEIGHT = 600;
+// Variables
+var container;
+var width, height;
 
-// Set some camera attributes.
-const VIEW_ANGLE = 45;
-const ASPECT = WIDTH / HEIGHT;
-const NEAR = 0.1;
-const FAR = 10000;
+var camera, scene, renderer, controls;
+var cube;
 
-// Get the DOM element to attach to
-const container =
-    document.querySelector('#container');
+// If no webGl detected
+//if (!Detector.webgl) Detector.addGetWebGLMessage();
 
+function initContainer() {
 
+  // WebGL container
+  container = document.querySelector('#container');
+  height = 600; //container.clientWidth;
+  width = 800; //container.clientHeight;
 
-// Create a WebGL renderer, camera
-// and a scene
-const renderer = new THREE.WebGLRenderer(/*{ alpha: true, antialias: true  }*/);
-//renderer.setClearColor(0xffffff, 0);
-const camera =
-    new THREE.PerspectiveCamera(
-        VIEW_ANGLE,
-        ASPECT,
-        NEAR,
-        FAR
-    );
+  // Camera
+  const VIEW_ANGLE = 45;
+  const ASPECT = width / height;
+  const NEAR = 0.1;
+  const FAR = 10000;
 
-const scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+  camera.position = new THREE.Vector3(0, 0, 0);
+  camera.lookAt(0, 0, -1);
 
-// Add the camera to the scene.
-scene.add(camera);
+  // Scene
+  scene = new THREE.Scene();
+  scene.add(camera);
 
-// Start the renderer.
-renderer.setSize(WIDTH, HEIGHT);
+  // Objects
+  const CUBE_SIDE = 60;
+  var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
+	var material =   new THREE.MeshLambertMaterial({ color: 0xFDEE00 });
+	var cube = new THREE.Mesh( geometry, material );
 
-// Attach the renderer-supplied
-// DOM element.
-container.appendChild(renderer.domElement);
+  cube.position.z = -300;
+	scene.add( cube );
 
+  var cubeAxis = new THREE.AxisHelper(80);
+  cube.add(cubeAxis);
 
-// Set up the plane vars
-//const PLANE_W = 50;
-//const PLANE_H = 20;
-const CUBE_SIDE = 60;
+  // Lights
+  const pointLight = new THREE.PointLight(0xFFFFFF);
+  //pointLight.position = new THREE.Vector3(10, 50, 100);
+  scene.add(pointLight);
 
-// Create a new mesh with
-// plane geometry - we will cover
-// create the plane's material
+  // Renderer
+  renderer = new THREE.WebGLRenderer(/*{
+    alpha: true,
+    antialias: true
+  }*/);
 
-//const planeMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000, side: THREE.DoubleSide });
-//const plane = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeMaterial);
-const meshMaterial = new THREE.MeshLambertMaterial({ color: 0xFDEE00 });
-const cube = new THREE.Mesh(new THREE.BoxGeometry(CUBE_SIDE, CUBE_SIDE, CUBE_SIDE), meshMaterial);
+  renderer.setClearColor(0xffffff, 0);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.gammaInput = true;
+  renderer.gammaOutput = true;
 
-// Move the Sphere back in Z so we
-// can see it.
-cube.position.z = -300;
+  renderer.setSize(width, height);
+  container.appendChild(renderer.domElement);
 
-// Finally, add the sphere to the scene.
-scene.add(cube);
-var cubeAxis = new THREE.AxisHelper(80);
-cube.add(cubeAxis);
+  // Event listener
+  //window.addEventListener('resize', onWindowResize, false);
 
+}
 
+/*
+function onWindowResize() {
+  //width = container.clientWidth;
+  //height = container.clientHeight;
+  camera.updateProjectionMatrix();
+  camera.aspect = width / height;
+  renderer.setSize(width, height);
+}
+*/
 
-// create a point light
-const pointLight = new THREE.PointLight(0xFFFFFF);
+function animate() {
+  requestAnimationFrame(animate);
+  update();
+  renderer.render(scene, camera);
 
-// set its position
-//pointLight.position.x = 10;
-//pointLight.position.y = 50;
-//pointLight.position.z = 130;
+}
 
-// add to the scene
-scene.add(pointLight);
+initContainer();
+animate();
 
 
 function update() {
-    // Draw!
-    renderer.render(scene, camera);
-
-    // Schedule the next frame.
-    requestAnimationFrame(update);
+  // TODO
 }
-
-// Schedule the first frame.
-requestAnimationFrame(update);
 
 
 /*
@@ -119,8 +117,6 @@ var rotLines = {
  *
  */
 
-
-
 // Get the DOM element to attach to
 
 
@@ -135,7 +131,7 @@ hub.on("pingScene", function (event)  {
 
         hub.emit("pingMobile", {
                 msg : "ok"
-            }); 
+            });
     }
 });
 
@@ -159,5 +155,3 @@ hub.on("deviceOrientation", function (event) {
 hub.on("deviceMotion", function (event) {
      //console.log(event)
 });
-
-
