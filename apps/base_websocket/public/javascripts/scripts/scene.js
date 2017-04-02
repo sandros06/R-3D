@@ -7,6 +7,9 @@ var width, height;
 var camera, scene, renderer, controls;
 var cube;
 
+var followCamMode = 0;
+var previousTime = Date.now();
+
 // If no webGl detected
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
 
@@ -24,23 +27,48 @@ function initContainer() {
   const FAR = 10000;
 
   camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-  camera.position = new THREE.Vector3(0, 0, 0);
-  camera.lookAt(0, 0, -1);
+  camera.position.x = 0; 
+  camera.position.y = 10;
+  camera.position.z = 100;
+  camera.lookAt(0, 0, 0);
 
   // Scene
   scene = new THREE.Scene();
   scene.add(camera);
 
-  // Objects
-  const CUBE_SIDE = 60;
-  var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
-	var material =   new THREE.MeshLambertMaterial({ color: 0xFDEE00 });
-	var cube = new THREE.Mesh( geometry, material );
+  // Grid
+  const CUBE_SIDE = 10;
+  const SIZE = 30, step = CUBE_SIDE / 2;
+  var geometry = new THREE.Geometry();
+  var material = new THREE.LineBasicMaterial({color: 'green'});   
 
-  cube.position.z = -300;
+  for ( var i = - SIZE; i <= SIZE; i += step) {
+      geometry.vertices.push(new THREE.Vector3( - SIZE, 0, i ));
+      geometry.vertices.push(new THREE.Vector3( SIZE, 0, i ));
+
+      geometry.vertices.push(new THREE.Vector3( i, 0, - SIZE ));
+      geometry.vertices.push(new THREE.Vector3( i, 0, SIZE ));
+
+      geometry.vertices.push(new THREE.Vector3( i, - SIZE, 0 ));
+      geometry.vertices.push(new THREE.Vector3( i, SIZE, 0 ));
+
+      geometry.vertices.push(new THREE.Vector3( - SIZE, i, 0 ));
+      geometry.vertices.push(new THREE.Vector3( SIZE, i, 0 ));
+  }
+
+  var line = new THREE.Line( geometry, material, THREE.LinePieces );
+  scene.add(line);
+
+  // Cube
+  var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
+	var material =   new THREE.MeshBasicMaterial({ color: 'yellow' });
+	var cube = new THREE.Mesh( geometry, material ); 
+  cube.position.x = 0;
+  cube.position.y = 10;
+  cube.position.z = 0;
 	scene.add( cube );
 
-  var cubeAxis = new THREE.AxisHelper(80);
+  var cubeAxis = new THREE.AxisHelper(30);
   cube.add(cubeAxis);
 
   // Lights
@@ -89,7 +117,24 @@ animate();
 
 
 function update() {
-  // TODO
+
+  if(followCamMode == 1)
+  {
+    // follow camera at each frame
+    lookAt(cube.position);
+  }
+  else if (followCamMode == 2)
+  {
+    // follow came with latency
+    var time = Date.now();
+
+    if (time > previousTime + 1000) { // 1 seconds refresh rates
+          lookAt(cube.position);
+      previousTime = time;
+    }
+  }
+
+  // else no follow camera
 }
 
 
