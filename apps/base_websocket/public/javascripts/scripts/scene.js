@@ -62,7 +62,7 @@ function initContainer() {
   // Cube
   var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
 	var material =   new THREE.MeshBasicMaterial({ color: 'yellow' });
-	var cube = new THREE.Mesh( geometry, material ); 
+  cube = new THREE.Mesh( geometry, material ); 
   cube.position.x = 0;
   cube.position.y = 10;
   cube.position.z = 0;
@@ -92,7 +92,6 @@ function initContainer() {
 
   // Event listener
   //window.addEventListener('resize', onWindowResize, false);
-
 }
 
 /*
@@ -205,6 +204,7 @@ hub.on("deviceOrientation", function (event) {
     rotLines.x.append(new Date().getTime(), event.beta);
     rotLines.y.append(new Date().getTime(), event.gamma);
     rotLines.z.append(new Date().getTime(), event.alpha);
+
 });
 
 
@@ -236,7 +236,6 @@ hub.on("deviceNipple", function (event) {
          vitesse.y =   deltat*50*event.force*Math.sin(event.angleRad);
          cube.position.x = cube.position.x + deltat*vitesse.x;
          cube.position.y = cube.position.y + deltat*vitesse.y;
-         console.log(cube.position);
      }
 });
 
