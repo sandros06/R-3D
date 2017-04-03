@@ -166,6 +166,16 @@ var rotLines = {
 
 
 var hub = io.connect(window.location.origin);
+var solutionNumber = 0;
+
+hub.on("solution", function (event)  {
+    $(document).trigger("add-alerts", {
+      message: "La solution "+event.number + " a été activé",
+      priority: "info"
+    });
+    solutionNumber = event.number;
+});
+
 
 hub.on("pingScene", function (event)  {
     if(event.return){
@@ -197,6 +207,43 @@ hub.on("deviceOrientation", function (event) {
     rotLines.z.append(new Date().getTime(), event.alpha);
 });
 
+
+/* todo à déplacer */
+var deltat = 0.1;
+var vitesse = {};
+vitesse.x = 0;
+vitesse.y = 0;
+vitesse.z = 0;
+
 hub.on("deviceMotion", function (event) {
      //console.log(event)
+     if(solutionNumber == 1){
+
+         vitesse.x =  deltat*event.acceleration.x;
+         vitesse.y = deltat*event.acceleration.y;
+         vitesse.z = deltat*event.acceleration.z;
+         cube.position.x = cube.position.x + deltat*vitesse.x;
+         cube.position.y = cube.position.y + deltat*vitesse.y;
+         cube.position.z = cube.position.z + deltat*vitesse.z;
+     }
 });
+
+ 
+hub.on("deviceNipple", function (event) {
+     //console.log(event)
+     if(solutionNumber == 2){
+         vitesse.x =   deltat*50*event.force*Math.cos(event.angleRad);
+         vitesse.y =   deltat*50*event.force*Math.sin(event.angleRad);
+         cube.position.x = cube.position.x + deltat*vitesse.x;
+         cube.position.y = cube.position.y + deltat*vitesse.y;
+         console.log(cube.position);
+     }
+});
+
+
+/* TODO pour la solution 2 (voir 1) il faudrait que la position soit calculé en dehors de l'event 
+soit dans une boucle infini (un event permanent)
+car sinon l'objet ne bouge que quand l'event est call
+
+ou alors il faut changer dans mobile_sol2.js l'emition que quand c'est en move mais tout le temps j'ai pas trouvé */
+
