@@ -30,7 +30,8 @@ if (window.DeviceOrientationEvent) {
            hub.emit("deviceOrientation", {
                 alpha: event.alpha,
                 beta: event.beta,
-                gamma: event.gamma
+                gamma: event.gamma,
+                interval : event.interval
             }); 
        }else{
 
@@ -56,7 +57,8 @@ if (window.DeviceMotionEvent) {
                     x: event.acceleration.x,
                     y: event.acceleration.y,
                     z: event.acceleration.z
-                }
+                },
+                interval : event.interval
             });  
           }else{
 

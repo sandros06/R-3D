@@ -7,7 +7,7 @@ var width, height;
 var camera, scene, renderer, controls;
 var cube;
 
-var followCamMode = 0;
+var followCamMode = 1;
 var previousTime = Date.now();
 
 // If no webGl detected
@@ -120,7 +120,7 @@ function update() {
   if(followCamMode == 1)
   {
     // follow camera at each frame
-    lookAt(cube.position);
+    camera.lookAt(cube.position);
   }
   else if (followCamMode == 2)
   {
@@ -128,7 +128,7 @@ function update() {
     var time = Date.now();
 
     if (time > previousTime + 1000) { // 1 seconds refresh rates
-          lookAt(cube.position);
+        camera.lookAt(cube.position);
       previousTime = time;
     }
   }
@@ -201,10 +201,6 @@ hub.on("deviceOrientation", function (event) {
     cube.rotation.y = 2 * Math.PI * event.gamma / 360;
     cube.rotation.z = 2 * Math.PI * event.alpha / 360;
 
-    rotLines.x.append(new Date().getTime(), event.beta);
-    rotLines.y.append(new Date().getTime(), event.gamma);
-    rotLines.z.append(new Date().getTime(), event.alpha);
-
 });
 
 
@@ -216,15 +212,20 @@ vitesse.y = 0;
 vitesse.z = 0;
 
 hub.on("deviceMotion", function (event) {
-     //console.log(event)
      if(solutionNumber == 1){
-
-         vitesse.x =  deltat*event.acceleration.x;
-         vitesse.y = deltat*event.acceleration.y;
-         vitesse.z = deltat*event.acceleration.z;
+         deltat = event.interval/1000;
+         vitesse.x = vitesse.x  + deltat*event.acceleration.x;
+         vitesse.y = vitesse.y  + deltat*event.acceleration.y;
+         vitesse.z = vitesse.z  + deltat*event.acceleration.z;
          cube.position.x = cube.position.x + deltat*vitesse.x;
          cube.position.y = cube.position.y + deltat*vitesse.y;
          cube.position.z = cube.position.z + deltat*vitesse.z;
+
+
+        rotLines.x.append(new Date().getTime(), event.acceleration.x);
+        rotLines.y.append(new Date().getTime(), event.acceleration.y);
+        rotLines.z.append(new Date().getTime(), event.acceleration.z);
+
      }
 });
 
