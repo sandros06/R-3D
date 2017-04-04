@@ -4,7 +4,7 @@
 var container;
 var width, height;
 
-var camera, scene, renderer, controls;
+var camera, scene, renderer, controls, stats;
 var cube;
 
 var followCamMode = 0;
@@ -27,9 +27,7 @@ function initContainer() {
   const FAR = 10000;
 
   camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-  camera.position.x = 0; 
-  camera.position.y = 10;
-  camera.position.z = 100;
+  camera.position.set(0, 10, 100);
   camera.lookAt(0, 0, 0);
 
   // Scene
@@ -40,11 +38,11 @@ function initContainer() {
   const CUBE_SIDE = 10;
   const SIZE = 30, step = CUBE_SIDE / 2;
   var geometry = new THREE.Geometry();
-  var material = new THREE.LineBasicMaterial({color: 'green'});   
+  var material = new THREE.LineBasicMaterial({color: 'green'});
 
   for ( var i = - SIZE; i <= SIZE; i += step) {
     geometry.vertices.push(new THREE.Vector3( - SIZE, 0, i ));
-      geometry.vertices.push(new THREE.Vector3( SIZE, 0, i ));
+    geometry.vertices.push(new THREE.Vector3( SIZE, 0, i ));
 
     geometry.vertices.push(new THREE.Vector3( i, 0, - SIZE ));
     geometry.vertices.push(new THREE.Vector3( i, 0, SIZE ));
@@ -61,20 +59,22 @@ function initContainer() {
 
   // Cube
   var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
-  var material =   new THREE.MeshBasicMaterial({ color: 'yellow' });
-  cube = new THREE.Mesh( geometry, material ); 
-  cube.position.x = 0;
-  cube.position.y = 10;
-  cube.position.z = 0;
+  var material = new THREE.MeshPhongMaterial( { 
+    ambient: 0x050505, 
+    color: 0x0033ff, 
+    specular: 0x555555, 
+    shininess: 30 } );  
+  cube = new THREE.Mesh( geometry, material );
+  cube.position.set(0, 10, 10);
 	scene.add( cube );
 
   var cubeAxis = new THREE.AxisHelper(30);
   cube.add(cubeAxis);
 
   // Lights
-  const pointLight = new THREE.PointLight(0xFFFFFF);
-  //pointLight.position = new THREE.Vector3(10, 50, 100);
-  scene.add(pointLight);
+  var light = new THREE.DirectionalLight( 0xffffff );
+  light.position.set( 0, 20, 40 ).normalize();
+  scene.add(light);
 
   // Renderer
   renderer = new THREE.WebGLRenderer(/*{
@@ -89,6 +89,11 @@ function initContainer() {
 
   renderer.setSize(width, height);
   container.appendChild(renderer.domElement);
+
+  // Stat
+  stats = new Stats();
+  stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  container.appendChild( stats.domElement );
 
   // Event listener
   //window.addEventListener('resize', onWindowResize, false);
@@ -105,14 +110,20 @@ function onWindowResize() {
 */
 
 function animate() {
-  requestAnimationFrame(animate);
-  update();
+
+  stats.begin();
+
+	update();
   renderer.render(scene, camera);
 
+	stats.end();
+
+  requestAnimationFrame(animate);
 }
 
 initContainer();
-animate();
+requestAnimationFrame(animate);
+
 
 
 function update() {
@@ -132,7 +143,7 @@ function update() {
       previousTime = time;
     }
   }
-
+  
   // else no follow camera
 }
 
@@ -218,7 +229,7 @@ hub.on("deviceMotion", function (event) {
   //console.log(event)
 });
 
- 
+
 hub.on("deviceNipple", function (event) {
      //console.log(event)
      if(solutionNumber == 2){
@@ -230,9 +241,8 @@ hub.on("deviceNipple", function (event) {
 });
 
 
-/* TODO pour la solution 2 (voir 1) il faudrait que la position soit calculé en dehors de l'event 
+/* TODO pour la solution 2 (voir 1) il faudrait que la position soit calculé en dehors de l'event
 soit dans une boucle infini (un event permanent)
 car sinon l'objet ne bouge que quand l'event est call
 
 ou alors il faut changer dans mobile_sol2.js l'emition que quand c'est en move mais tout le temps j'ai pas trouvé */
-
