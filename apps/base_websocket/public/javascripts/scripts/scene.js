@@ -187,6 +187,22 @@ hub.on("solution", function (event)  {
 });
 
 
+
+// Pour eviter la désync
+function callMobile() {
+    hub.emit("callMobile",{
+      needSolution : true
+    });
+    console.log("No device detected");
+
+if(solutionNumber == 0){
+      setTimeout(callMobile, 6000);  
+  }
+}
+
+if(solutionNumber == 0){  
+  callMobile();
+}
 hub.on("pingScene", function (event)  {
   if(event.return){
     $(document).trigger("add-alerts", {
@@ -199,6 +215,9 @@ hub.on("pingScene", function (event)  {
     });
   }
 });
+
+
+
 
 hub.on("noSupported", function (event)  {
   $(document).trigger("add-alerts", {
