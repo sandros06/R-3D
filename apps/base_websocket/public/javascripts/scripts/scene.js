@@ -166,6 +166,36 @@ graph.addTimeSeries(rotLines.x, {strokeStyle: '#ff0000'});
 graph.addTimeSeries(rotLines.y, {strokeStyle: '#00ff00'});
 graph.addTimeSeries(rotLines.z, {strokeStyle: '#0000ff'});
 
+
+/*
+ *
+ *      Filtre
+ *
+ */
+var config_filtre = {};
+config_filtre["current"] = "filtreBorne"
+config_filtre["filtre_borne"] = {};
+config_filtre["filtre_borne"]["inf"] = -2;
+config_filtre["filtre_borne"]["sup"] = 2; // à priori égal
+function filtreBorne(value){
+  if(value > config_filtre["filtre_borne"]["sup"]){
+    return value - config_filtre["filtre_borne"]["sup"];
+  }else if(value < config_filtre["filtre_borne"]["inf"]){
+    return value - config_filtre["filtre_borne"]["inf"];
+  }else {
+    return 0;
+  }
+}
+
+
+function applyFiltre(value){
+  if(config_filtre["current"]){
+    return filtreBorne(value);
+  }else{
+    return value;
+  }
+}
+
 /*
  *
  *      HUB
@@ -258,9 +288,9 @@ hub.on("deviceMotion", function (event) {
 
      if(solutionNumber == 1){
         deltat = event.interval/1000;
-        acceleration.x = event.acceleration.x;
-        acceleration.y = event.acceleration.y;
-        acceleration.z = event.acceleration.z
+        acceleration.x = applyFiltre(event.acceleration.x);
+        acceleration.y = applyFiltre(event.acceleration.y);
+        acceleration.z = applyFiltre(event.acceleration.z);
      }
 
 });
