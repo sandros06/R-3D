@@ -34,8 +34,8 @@ function initContainer() {
   scene = new THREE.Scene();
   scene.add(camera);
 
-  // Grid
   const CUBE_SIDE = 10;
+  // Grid
   const SIZE = 30, step = CUBE_SIDE / 2;
   var geometry = new THREE.Geometry();
   var material = new THREE.LineBasicMaterial({color: 'green'});
@@ -56,6 +56,21 @@ function initContainer() {
 
   var line = new THREE.Line( geometry, material, THREE.LinePieces );
   scene.add(line);
+  
+
+  // Plane
+  /*
+  var geometry = new THREE.PlaneGeometry( 50, 50 );
+  var material = new THREE.MeshBasicMaterial( {
+    color: 0xffff00, 
+    side: THREE.DoubleSide
+  } );
+
+  var plane = new THREE.Mesh( geometry, material );
+  plane.receiveShadow = true;
+
+  scene.add( plane );
+  */
 
   // Cube
   var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
@@ -65,6 +80,7 @@ function initContainer() {
     specular: 0x555555, 
     shininess: 30 } );  
   cube = new THREE.Mesh( geometry, material );
+  cube.receiveShadow = true;
   cube.position.set(0, 10, 10);
 	scene.add( cube );
 
@@ -73,15 +89,18 @@ function initContainer() {
 
   // Lights
   var light = new THREE.DirectionalLight( 0xffffff );
-  light.position.set( 0, 20, 40 ).normalize();
+  light.position.set( 0, 10, 50 ).normalize();
+  light.castShadow = true;
+  //light.target = plane;
   scene.add(light);
 
   // Renderer
-  renderer = new THREE.WebGLRenderer(/*{
-    alpha: true,
+  renderer = new THREE.WebGLRenderer( {
+    alpha: false,
     antialias: true
-  }*/);
+  } );
 
+  renderer.receiveShadow = true;
   renderer.setClearColor(0xffffff, 0);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.gammaInput = true;
