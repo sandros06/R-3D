@@ -48,17 +48,17 @@ if (window.DeviceMotionEvent) {
     window.addEventListener("devicemotion", function (event) {
         if(event.acceleration.x != null && event.acceleration.y != null && event.acceleration.z != null){
               hub.emit("deviceMotion", {
-                accelerationIncludingGravity: {
-                    x: event.accelerationIncludingGravity.x,
-                    y: event.accelerationIncludingGravity.y,
-                    z: event.accelerationIncludingGravity.z
-                },
                 acceleration: {
                     x: event.acceleration.x,
                     y: event.acceleration.y,
                     z: event.acceleration.z
                 },
-                interval : event.interval
+                interval : event.interval,
+                rotationRate : {
+                    alpha: event.rotationRate.alpha,
+                    beta : event.rotationRate.beta,
+                    gamma: event.rotationRate.gamma
+                }
             });  
           }else{
 
