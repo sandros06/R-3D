@@ -1,0 +1,42 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+#graph {
+    width: 300px;
+    height: 200px;
+
+    position: absolute;
+
+
+    opacity: 0.5;
+}
+
+#graph:hover {
+    opacity: 1.0;
+}
+
+#containere {
+    width: 800px;
+    height: 600px;
+
+    position: relative;
+}
+
+.row.espace-image{
+    margin-top: 50px;
+}
+
+img.img-responsive.button-img{
+    display:block;
+    margin:auto;
+    border-color:grey;
+    border-width:2px; 
+    border-style:outset;
+}
