@@ -3,50 +3,41 @@
 var hub = io.connect(window.location.origin);
 
 hub.emit("pingScene", {
-    return : true
+    return: true
 });
 
 
-
-function sendNoSupported(type) {
-
-     $(document).trigger("add-alerts", {
-      message: "Le navigateur ne supporte pas le capteur suivant "+type,
-      priority: "error"
+function sendNotSupported(type) {
+    $(document).trigger("add-alerts", {
+        message: "Le navigateur ne supporte pas le capteur suivant " + type,
+        priority: "error"
     });
+
     hub.emit("noSupported", {
-            type : type
-        });
+        type: type
+    });
 }
-
-
-
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener("deviceorientation", function (event) {
-        /* TODO check frequence of send data */ 
+        /* TODO check frequence of sent data */
 
-        if(event.alpha != null && event.beta != null && event.gamma != null){
-           hub.emit("deviceOrientation", {
+        if (event.alpha != null && event.beta != null && event.gamma != null) {
+            hub.emit("deviceOrientation", {
                 alpha: event.alpha,
                 beta: event.beta,
                 gamma: event.gamma
-            }); 
-       }else{
-
-            sendNoSupported("deviceOrientation");
-       }
-        
-
+            });
+        }
     }, false);
 } else {
-    sendNoSupported("deviceOrientation");
+    sendNotSupported("deviceOrientation");
 }
 
 if (window.DeviceMotionEvent) {
     window.addEventListener("devicemotion", function (event) {
-        if(event.acceleration.x != null && event.acceleration.y != null && event.acceleration.z != null){
-              hub.emit("deviceMotion", {
+        if (event.acceleration.x != null && event.acceleration.y != null && event.acceleration.z != null) {
+            hub.emit("deviceMotion", {
                 accelerationIncludingGravity: {
                     x: event.accelerationIncludingGravity.x,
                     y: event.accelerationIncludingGravity.y,
@@ -57,16 +48,12 @@ if (window.DeviceMotionEvent) {
                     y: event.acceleration.y,
                     z: event.acceleration.z
                 }
-            });  
-          }else{
-
-            sendNoSupported("deviceMotion");
-          }
-        
+            });
+        }
     }, false);
 } else {
-   
-    sendNoSupported("deviceMotion");
+
+    sendNotSupported("deviceMotion");
 }
 
 /*
@@ -75,10 +62,9 @@ if (window.DeviceMotionEvent) {
  *
  */
 
-
-hub.on("pingMobile", function (event)  {
+hub.on("pingMobile", function (event) {
     $(document).trigger("add-alerts", {
-      message: "Connexion établi avec la scène",
-      priority: "info"
+        message: "Connexion établi avec la scène",
+        priority: "info"
     });
 });
