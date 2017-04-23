@@ -5,7 +5,7 @@ var container;
 var width, height;
 
 var camera, scene, renderer, controls, stats;
-var cube;
+var cone;
 
 var followCamMode = 1;
 var previousTime = Date.now();
@@ -64,8 +64,8 @@ function initContainer() {
   scene.add(camera);
 
   // Grid
-  const CUBE_SIDE = 10;
-  const SIZE = 30, step = CUBE_SIDE / 2;
+  const CONE_SIDE = 10;
+  const SIZE = 30, step = CONE_SIDE / 2;
   var geometry = new THREE.Geometry();
   var material = new THREE.LineBasicMaterial({color: 'green'});
 
@@ -86,20 +86,19 @@ function initContainer() {
   var line = new THREE.Line( geometry, material, THREE.LinePieces );
   scene.add(line);
 
-  // Cube
-  //var geometry = new THREE.BoxGeometry( CUBE_SIDE, CUBE_SIDE, CUBE_SIDE );
-  var geometry = new THREE.ConeBufferGeometry( 5, 10, 15 );
+  // Cone
+  var geometry = new THREE.ConeBufferGeometry( CONE_SIDE / 2, CONE_SIDE, CONE_SIDE * 1.5 );
   var material = new THREE.MeshPhongMaterial( { 
     ambient: 0x050505, 
     color: 0x0033ff, 
     specular: 0x555555, 
     shininess: 30 } );  
-  cube = new THREE.Mesh( geometry, material );
-  cube.position.set(0, 10, 10);
-	scene.add( cube );
+  cone = new THREE.Mesh( geometry, material );
+  cone.position.set(0, 10, 10);
+	scene.add( cone );
 
-  var cubeAxis = new THREE.AxisHelper(30);
-  cube.add(cubeAxis);
+  var coneAxis = new THREE.AxisHelper(30);
+  cone.add(coneAxis);
 
   // Lights
   var light = new THREE.DirectionalLight( 0xffffff );
@@ -158,7 +157,7 @@ function update() {
   if (followCamMode == 1)
   {
     // follow camera at each frame
-    camera.lookAt(cube.position);
+    camera.lookAt(cone.position);
   }
   else if (followCamMode == 2)
   {
@@ -166,7 +165,7 @@ function update() {
     var time = Date.now();
 
     if (time > previousTime + 1000) { // 1 seconds refresh rates
-      camera.lookAt(cube.position);
+      camera.lookAt(cone.position);
       previousTime = time;
     }
   }
@@ -185,31 +184,31 @@ function update() {
 
     if (orientation.counter != 0)
     {
-      cube.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
-      cube.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
-      cube.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
+      cone.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
+      cone.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
     }
     
     if (motion.counter != 0)
     {
-      cube.translateX(applyFiltre(result.motion.acceleration.x));
-      cube.translateY(applyFiltre(result.motion.acceleration.y));
-      cube.translateZ(applyFiltre(result.motion.acceleration.z));
+      cone.translateX(applyFiltre(result.motion.acceleration.x));
+      cone.translateY(applyFiltre(result.motion.acceleration.y));
+      cone.translateZ(applyFiltre(result.motion.acceleration.z));
     }
   }
   else if (solutionNumber == 2) {
     /* TODO Fusion capteur with kalman*/
     if (orientation.counter != 0)
     {
-      cube.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
-      cube.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
-      cube.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
+      cone.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
+      cone.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
     }
     //NIPPLE
     if (nipple.counter != 0)
     {
-      cube.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
-      cube.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
+      cone.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
+      cone.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
     }
   }
 
