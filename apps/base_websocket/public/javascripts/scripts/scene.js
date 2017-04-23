@@ -38,6 +38,13 @@ var nipple = {
   angleRad: 0
 };
 
+// Kalman variable
+var kalmanBeta = new Kalman();
+kalmanBeta.setAngle(0); // Todo angle 
+var kalmanGamma = new Kalman();
+kalmanGamma.setAngle(0); // Todo angle 
+var kalmanAlpha = new Kalman();
+kalmanAlpha.setAngle(0); // Todo angle 
 
 // If no webGl detected
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
@@ -197,9 +204,20 @@ function update() {
     }
   }
   else if (solutionNumber == 2) {
-    /* TODO Fusion capteur with kalman*/
+    
     if (orientation.counter != 0)
     {
+      // TODO  à delete après que sa marche
+      console.log("Angle calculated with kalman\n");
+      console.log(kalmanBeta.getAngle(result.orientation.betaDeg));
+      console.log(kalmanGamma.getAngle(result.orientation.gammaDeg));
+      console.log(kalmanAlpha.getAngle(result.orientation.alphaDeg));
+      
+      console.log("Angle calculated without kalman\n");
+      console.log(result.orientation.betaDeg);
+      console.log(result.orientation.gammaDeg);
+      console.log(result.orientation.alphaDeg);
+
       cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
       cone.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
       cone.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
@@ -244,6 +262,16 @@ function getSensorData()
       angleRad : nipple.angleRad / nipple.counter
     }
   };
+  // Kalman rate init and interval ! 
+  // TODO SEMBLE AVOIR UN BUG ICI genre des NaN sont présent ici 
+  if(result.motion.counter != 0){
+    kalmanAlpha.setRate(result.motion.rotationRate.alphaDeg);
+    kalmanGamma.setRate(result.motion.rotationRate.gammaDeg);
+    kalmanBeta.setRate(result.motion.rotationRate.betaDeg);
+    kalmanBeta.setDeltat(result.motion.interval/1000);
+    kalmanGamma.setDeltat(result.motion.interval/1000);
+    kalmanAlpha.setDeltat(result.motion.interval/1000);
+  }
   return result;          
 }
 
@@ -385,7 +413,9 @@ hub.on("deviceMotion", function (event) {
   motion.rotationRate.betaDeg  += event.rotationRate.beta;
   motion.rotationRate.gammaDeg += event.rotationRate.gamma;
   motion.rotationRate.alphaDeg += event.rotationRate.alpha;
+  
   motion.interval              += event.interval;
+
 });
 
 hub.on("deviceOrientation", function (event) {
@@ -412,3 +442,27 @@ hub.on("deviceNipple", function (event) {
  */
 initContainer();
 requestAnimationFrame(animate);
+
+/*
+
+var kkk = new Kalman();
+console.log(kkk);
+var angle = 20;
+kkk.setAngle(20);
+console.log("default angle " +angle )
+
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+console.log(angle+5 + " : " + kkk.getAngle(angle+5));
+
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+console.log(angle-20 + " : " + kkk.getAngle(angle-20));
+*/
