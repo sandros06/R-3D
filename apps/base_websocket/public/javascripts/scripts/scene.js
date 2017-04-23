@@ -209,18 +209,25 @@ function update() {
     {
       // TODO  à delete après que sa marche
       console.log("Angle calculated with kalman\n");
-      console.log(kalmanBeta.getAngle(result.orientation.betaDeg));
-      console.log(kalmanGamma.getAngle(result.orientation.gammaDeg));
-      console.log(kalmanAlpha.getAngle(result.orientation.alphaDeg));
+      var tmpBetaDeg = kalmanBeta.getAngle(result.orientation.betaDeg);
+      var tmpGammaDeg =kalmanGamma.getAngle(result.orientation.gammaDeg);
+      var tmpAlphaDeg =kalmanAlpha.getAngle(result.orientation.alphaDeg);
+      console.log(tmpBetaDeg );
+      console.log(tmpGammaDeg);
+      console.log(tmpAlphaDeg);
       
       console.log("Angle calculated without kalman\n");
       console.log(result.orientation.betaDeg);
       console.log(result.orientation.gammaDeg);
       console.log(result.orientation.alphaDeg);
 
-      cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
+      /*cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
       cone.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
       cone.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      */
+      cone.rotation.x = 2 * Math.PI * tmpBetaDeg / 360;
+      cone.rotation.y = 2 * Math.PI * tmpGammaDeg / 360;
+      cone.rotation.z = 2 * Math.PI * tmpAlphaDeg / 360;
     }
     //NIPPLE
     if (nipple.counter != 0)
@@ -265,12 +272,31 @@ function getSensorData()
   // Kalman rate init and interval ! 
   // TODO SEMBLE AVOIR UN BUG ICI genre des NaN sont présent ici 
   if(result.motion.counter != 0){
-    kalmanAlpha.setRate(result.motion.rotationRate.alphaDeg);
-    kalmanGamma.setRate(result.motion.rotationRate.gammaDeg);
-    kalmanBeta.setRate(result.motion.rotationRate.betaDeg);
-    kalmanBeta.setDeltat(result.motion.interval/1000);
-    kalmanGamma.setDeltat(result.motion.interval/1000);
-    kalmanAlpha.setDeltat(result.motion.interval/1000);
+    if(!isNaN(result.motion.rotationRate.alphaDeg)){
+      kalmanAlpha.setRate(result.motion.rotationRate.alphaDeg);
+    }else{
+      kalmanAlpha.setRate(0)
+    }
+    if(!isNaN(result.motion.rotationRate.betaDeg)){
+      kalmanBeta.setRate(result.motion.rotationRate.betaDeg);
+    }else{
+      kalmanBeta.setRate(0)
+    }
+    if(!isNaN(result.motion.rotationRate.gammaDeg)){
+      kalmanGamma.setRate(result.motion.rotationRate.gammaDeg);
+    }else{
+      kalmanGamma.setRate(0)
+    }
+    if(!isNaN(result.motion.interval)){
+      kalmanBeta.setDeltat(result.motion.interval/1000);
+      kalmanGamma.setDeltat(result.motion.interval/1000);
+      kalmanAlpha.setDeltat(result.motion.interval/1000);
+    }else{
+      // TODO change default value
+      kalmanBeta.setDeltat(16/1000);
+      kalmanGamma.setDeltat(16/1000);
+      kalmanAlpha.setDeltat(16/1000);
+    }
   }
   return result;          
 }
