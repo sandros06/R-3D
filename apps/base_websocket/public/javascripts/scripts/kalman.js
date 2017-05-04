@@ -6,8 +6,8 @@ class Kalman {
     this.newRate = 0;   // the rate should be in degrees per second
     this.deltat = 0.1;  // the delta time in seconds
 
-    this.Q_angle = 0.001;   // Process noise variance for the accelerometer
-    this.Q_bias = 0.003;    // Process noise variance for the gyro bias
+    this.Q_angle = 0.01;   // Process noise variance for the accelerometer
+    this.Q_bias = 0.03;    // Process noise variance for the gyro bias
     this.R_measure = 0.03;  // Measurement noise variance - this is actually the variance of the measurement noise
 
     this.angle = 0.0;   // The angle calculated by the Kalman filter - part of the 2x1 state vector // Reset the angle

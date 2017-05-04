@@ -56,7 +56,6 @@ var els = {
 
 // Print data into elements
 
-
 joystick.on('move', function (evt, nipple) {
 	debug(nipple);
 	hub.emit("deviceNipple", {
@@ -64,8 +63,12 @@ joystick.on('move', function (evt, nipple) {
 	    angleRad : nipple.angle.radian
     });
 }).on('end', function (evt, nipple) {
-	console.log("noo");
+  hub.emit("deviceNipple", {
+      force : 0,
+      angleRad : 0
+    });
 });
+
 
 
 function debug(obj) {

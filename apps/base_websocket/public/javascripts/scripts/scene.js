@@ -182,9 +182,6 @@ function update() {
   var result = getSensorData();
 
   // Graph
-  rotLines.x.append(new Date().getTime(), result.motion.acceleration.x);
-  rotLines.y.append(new Date().getTime(), result.motion.acceleration.y);
-  rotLines.z.append(new Date().getTime(), result.motion.acceleration.z);
  
   // Motion and Orientation
   if (solutionNumber == 1) {
@@ -208,18 +205,32 @@ function update() {
     if (orientation.counter != 0)
     {
       // TODO  à delete après que sa marche
-      console.log("Angle calculated with kalman\n");
-      var tmpBetaDeg = kalmanBeta.getAngle(result.orientation.betaDeg);
-      var tmpGammaDeg =kalmanGamma.getAngle(result.orientation.gammaDeg);
-      var tmpAlphaDeg =kalmanAlpha.getAngle(result.orientation.alphaDeg);
-      console.log(tmpBetaDeg );
-      console.log(tmpGammaDeg);
-      console.log(tmpAlphaDeg);
-      
-      console.log("Angle calculated without kalman\n");
-      console.log(result.orientation.betaDeg);
-      console.log(result.orientation.gammaDeg);
-      console.log(result.orientation.alphaDeg);
+      var tmpBetaDeg,tmpGammaDeg,tmpAlphaDeg = 0;
+      var angle1 = 355;
+      var angle2 = 5;
+      if(result.orientation.betaDeg >= angle1 || result.orientation.betaDeg <= angle2){
+        tmpBetaDeg = result.orientation.betaDeg;
+        kalmanBeta.setAngle(result.orientation.betaDeg);
+      }else{
+        tmpBetaDeg = kalmanBeta.getAngle(result.orientation.betaDeg);
+      }
+      if(result.orientation.gammaDeg >= angle1 || result.orientation.gammaDeg <= angle2){
+        tmpGammaDeg =result.orientation.gammaDeg;
+        kalmanGamma.setAngle(result.orientation.gammaDeg);
+      }else{
+        tmpGammaDeg =kalmanGamma.getAngle(result.orientation.gammaDeg);
+      }
+      if(result.orientation.alphaDeg >= angle1 || result.orientation.alphaDeg <= angle2){  
+        tmpAlphaDeg =result.orientation.alphaDeg;
+        kalmanAlpha.setAngle(result.orientation.alphaDeg);
+      }else{
+        tmpAlphaDeg =kalmanAlpha.getAngle(result.orientation.alphaDeg);
+      }
+     
+
+  rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
+  rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
+  //rotLines.z.append(new Date().getTime(), tmpBetaDeg);
 
       /*cone.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
       cone.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
@@ -271,21 +282,21 @@ function getSensorData()
   };
   // Kalman rate init and interval ! 
   // TODO SEMBLE AVOIR UN BUG ICI genre des NaN sont présent ici 
-  if(result.motion.counter != 0){
+  if(motion.counter != 0){
     if(!isNaN(result.motion.rotationRate.alphaDeg)){
       kalmanAlpha.setRate(result.motion.rotationRate.alphaDeg);
     }else{
-      kalmanAlpha.setRate(0)
+      kalmanAlpha.setRate(0);
     }
     if(!isNaN(result.motion.rotationRate.betaDeg)){
       kalmanBeta.setRate(result.motion.rotationRate.betaDeg);
     }else{
-      kalmanBeta.setRate(0)
+      kalmanBeta.setRate(0);
     }
     if(!isNaN(result.motion.rotationRate.gammaDeg)){
       kalmanGamma.setRate(result.motion.rotationRate.gammaDeg);
     }else{
-      kalmanGamma.setRate(0)
+      kalmanGamma.setRate(0);
     }
     if(!isNaN(result.motion.interval)){
       kalmanBeta.setDeltat(result.motion.interval/1000);
