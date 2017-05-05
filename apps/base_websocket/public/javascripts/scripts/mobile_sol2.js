@@ -62,7 +62,10 @@ joystick.on('move', function (evt, nipple) {
 	    force : nipple.force,
 	    angleRad : nipple.angle.radian
     });
-}).on('end', function (evt, nipple) {
+});
+
+joystick.on('end', function (evt, nipple) {
+  debug(nipple);
   hub.emit("deviceNipple", {
       force : 0,
       angleRad : 0
