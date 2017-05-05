@@ -71,9 +71,9 @@ function initContainer() {
   scene.add(camera);
 
 
-  const CUBE_SIDE = 10;
+  const CONE_SIDE = 10;
   // Grid
-  const SIZE = 30, step = CUBE_SIDE / 2;
+  const SIZE = 30, step = CONE_SIDE / 2;
 
   var geometry = new THREE.Geometry();
   var material = new THREE.LineBasicMaterial({color: 'green'});
@@ -118,10 +118,10 @@ function initContainer() {
     specular: 0x555555, 
     shininess: 30 } );  
 
-  cube = new THREE.Mesh( geometry, material );
-  cube.receiveShadow = true;
-  cube.position.set(0, 10, 10);
-	scene.add( cube );
+  cone = new THREE.Mesh( geometry, material );
+  cone.receiveShadow = true;
+  cone.position.set(0, 10, 10);
+	scene.add( cone );
 
 
   var coneAxis = new THREE.AxisHelper(30);
