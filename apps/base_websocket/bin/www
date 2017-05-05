@@ -68,6 +68,10 @@ hub.on('connection', function (socket) {
     socket.on('deviceNipple', function (event) {
         socket.broadcast.emit('deviceNipple', event);
     });
+
+    socket.on('callMobile', function (event) {
+        socket.broadcast.emit('callMobile', event);
+    });
 });
 
 
