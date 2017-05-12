@@ -295,31 +295,31 @@ $('#notchFilter').click(function() {
     }
 });
 
-$('#fixe').click(function() {
+$('.fixe').click(function() {
     if (this.checked) {
         followCamMode = 0;
     }
 });
 
-$('#mobile').click(function() {
+$('.mobile').click(function() {
     if (this.checked) {
         followCamMode = 1;
     }
 });
 
-$('#semi-mobile').click(function() {
+$('.semi-mobile').click(function() {
     if (this.checked) {
         followCamMode = 2;
     }
 });
 
-$('#cone').click(function() {
+$('.cone').click(function() {
     if (this.checked) {
         objectToMove = 'cone';
     }
 });
 
-$('#earth').click(function() {
+$('.earth').click(function() {
     if (this.checked) {
         objectToMove = 'earth';
     }
