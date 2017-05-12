@@ -13,7 +13,7 @@ var camera, scene, renderer, controls, stats;
 var objectToMove, cone = null, mesh_earth = null ;
 var light = null, line = null;
 
-var kalmanActivated = false, notchFilter = true;
+var kalmanActivated = false, notchFilter = false;
 
 var followCamMode = 0;
 var previousTime = Date.now();
@@ -222,7 +222,7 @@ function initContainer() {
   scene.add(camera);
 
   // TESTSTTETSTST
-  initEarth();
+  //initEarth();
   initCone();
 
   // Renderer
@@ -419,17 +419,17 @@ function applyFiltre(value){
 
 $('#kalman').click(function() {
     if (this.checked) {
-        kalmanActivated = 1;
+        kalmanActivated = true;
     } else {
-        kalmanActivated = 0;
+        kalmanActivated = false;
     }
 });
 
 $('#notchFilter').click(function() {
     if (this.checked) {
-        notchFilter = 1;
+        notchFilter = true;
     } else {
-        notchFilter = 0;
+        notchFilter = false;
     }
 });
 
