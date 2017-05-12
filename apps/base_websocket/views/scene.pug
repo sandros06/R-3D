@@ -1,45 +1,58 @@
 extends layout
 block content
- .container-fluid
-      .row
-        .col-lg-8.scene-screen
-            div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
-            #container
-                #graph
-                    canvas(style='',id='graphCanvas', width='300', height='200')
-            script(src='/javascripts/modules/socket.io.min.js')
-            script(src='/javascripts/modules/three.min.js')
-            script(src='/javascripts/modules/stats.min.js')
-            script(src='/javascripts/modules/smoothie.js')
-            script(src='/javascripts/scripts/kalman.js')
-            script(src='/javascripts/scripts/hub_scene.js')
-            script(src='/javascripts/scripts/data_scene.js')
-            script(src='/javascripts/scripts/scene.js')
-            script(src='/javascripts/scripts/alert.js')
-        .col-lg-4
-            h3.title-panel Menu
-            .panel.panel-primary
-                .panel-heading
-                    h3.panel-title  Filtre
-                .panel-body 
-                    .checkbox
-                        label
-                            input(type='checkbox')
-                            |  Kalman
-                .panel-body 
-                    .checkbox
-                        label
-                            input(type='checkbox')
-                            | Coupe Bande
-            .panel.panel-default
-                .panel-heading
-                    h3.panel-title  Suivis Caméra
-                .panel-body  Caméra 1
-                .panel-body  Caméra 2
-                .panel-body  Caméra 3 
-            .panel.panel-default
-                .panel-heading
-                    h3.panel-title Scène
-                .panel-body Cone
-                .panel-body Terre
-                .panel-body ?
+   .container-fluid 
+        .row
+            .col-lg-8.scene-screen
+                div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
+                #container
+                    #graph
+                        canvas(style='',id='graphCanvas', width='300', height='200')
+                script(src='/javascripts/modules/socket.io.min.js')
+                script(src='/javascripts/modules/three.min.js')
+                script(src='/javascripts/modules/stats.min.js')
+                script(src='/javascripts/modules/smoothie.js')
+                script(src='/javascripts/scripts/kalman.js')
+                script(src='/javascripts/scripts/hub_scene.js')
+                script(src='/javascripts/scripts/data_scene.js')
+                script(src='/javascripts/scripts/scene.js')
+                script(src='/javascripts/scripts/alert.js')
+        
+            .col-lg-4.block-panel
+                .panel.panel-primary
+                    .panel-heading
+                        h3.panel-title  Menu
+                    if true
+                        .panel-body
+                            .checkbox
+                                label
+                                    input(type='checkbox' checked="checked" id="kalman")
+                                    |  Kalman
+                    else
+                        .panel-body 
+                            .checkbox
+                                label
+                                    input(type='checkbox' checked="checked" id="notchFilter")
+                                    | Coupe Bande
+                    hr
+                    .btn-group(data-toggle='buttons')
+                        label.btn.btn-info.active
+                            input#option1(type='radio', name='options', autocomplete='off', checked='' id="fixe")
+                            |  Caméra Fixe
+                        label.btn.btn-info
+                            input#option2(type='radio', name='options', autocomplete='off' id="mobile")
+                            |  Caméra Mobile
+                        label.btn.btn-info
+                            input#option3(type='radio', name='options', autocomplete='off' id="semi-mobile")
+                            |  Caméra Semi-Mobile
+                    hr
+                    .btn-group(data-toggle='buttons')
+                        label.btn.btn-primary.active
+                            input#option1(type='radio', name='options', autocomplete='off', checked='' id="cone")
+                            |  Cone
+                        label.btn.btn-primary
+                            input#option2(type='radio', name='options', autocomplete='off' id="earth")
+                            |  Terre
+            
+
+
+            
