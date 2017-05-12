@@ -1,6 +1,7 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100vh;
 }
 
 a {
@@ -39,4 +40,59 @@ img.img-responsive.button-img{
     border-color:grey;
     border-width:2px; 
     border-style:outset;
+}
+
+.details-logo{
+    max-width:200px;
+}
+
+.navbar
+{
+    background-color:white;
+    border: none;
+}
+
+footer p 
+{
+    text-align: center;
+}
+
+nav
+{
+    max-height: 100px;
+}
+
+.contenu
+{
+    margin-top:100px;
+}
+
+.title-panel
+{
+    text-align: center;
+}
+
+.content
+{
+    margin-top: 30%;
+}
+
+.startst
+{
+    margin-top: 70px;
+}
+
+.title-panel
+{
+    margin-top: 50px;
+}
+
+.checkbox
+{
+    margin: 0px;
+}
+
+.scene-screen
+{
+    margin-top : 60px;
 }
