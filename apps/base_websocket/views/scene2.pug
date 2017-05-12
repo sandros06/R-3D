@@ -1,0 +1,14 @@
+extends layout
+block content
+    div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
+    #container
+      #graph
+        canvas(style='',id='graphCanvas', width='300', height='200')
+    script(src='/javascripts/modules/socket.io.min.js')
+    script(src='/javascripts/modules/three.min.js')
+    script(src='/javascripts/modules/stats.min.js')
+    script(src='/javascripts/modules/smoothie.js')
+    script(src='/javascripts/modules/dat.gui.min.js')
+    script(src='/javascripts/scripts/kalman.js')
+    script(src='/javascripts/scripts/scene2.js')
+    script(src='/javascripts/scripts/alert.js')
