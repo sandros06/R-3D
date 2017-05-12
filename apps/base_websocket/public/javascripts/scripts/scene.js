@@ -13,6 +13,18 @@ var cone;
 
 var followCamMode = 1;
 var previousTime = Date.now();
+// Menu variables
+
+var kalmanActivation = true;
+
+function toggleKalman() {
+  if(kalmanActivation){
+    kalmanActivation = false;
+  }else{
+    kalmanActivation = true;
+  }
+}
+
 
 // Kalman variable
 var kalmanBeta = new Kalman();
@@ -128,6 +140,9 @@ function initContainer() {
   // Stat
   stats = new Stats();
   stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  stats.domElement.style.position   = 'absolute'
+  stats.domElement.style.left  = '0px'
+  stats.domElement.style.bottom    = '0px'
   container.appendChild( stats.domElement );
 
   // Event listener
