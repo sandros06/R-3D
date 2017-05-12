@@ -288,7 +288,57 @@ function applyFiltre(value){
   }
 }
 
+/*
+ *
+ * MENU
+ * 
+ */
 
+$('#kalman').click(function() {
+    if (this.checked) {
+        kalmanActivated = 1;
+    } else {
+        kalmanActivated = 0;
+    }
+});
+
+$('#notchFilter').click(function() {
+    if (this.checked) {
+        notchFilter = 1;
+    } else {
+        notchFilter = 0;
+    }
+});
+
+$('.fixe').click(function() {
+    if (this.checked) {
+        followCamMode = 0;
+    }
+});
+
+$('.mobile').click(function() {
+    if (this.checked) {
+        followCamMode = 1;
+    }
+});
+
+$('.semi-mobile').click(function() {
+    if (this.checked) {
+        followCamMode = 2;
+    }
+});
+
+$('.cone').click(function() {
+    if (this.checked) {
+        objectToMove = 'cone';
+    }
+});
+
+$('.earth').click(function() {
+    if (this.checked) {
+        objectToMove = 'earth';
+    }
+});
 /*
  *
  *      START CODE
