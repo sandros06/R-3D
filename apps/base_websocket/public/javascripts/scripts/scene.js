@@ -11,7 +11,7 @@ var width, height;
 var camera, scene, renderer, controls, stats;
 var cone;
 
-var followCamMode = 1;
+var followCamMode = 0;
 var previousTime = Date.now();
 // Menu variables
 
@@ -310,31 +310,31 @@ $('#notchFilter').click(function() {
     }
 });
 
-$('.fixe').click(function() {
+$('#fixe').change(function() {
     if (this.checked) {
         followCamMode = 0;
     }
 });
 
-$('.mobile').click(function() {
+$('#mobile').change(function() {
     if (this.checked) {
         followCamMode = 1;
     }
 });
 
-$('.semi-mobile').click(function() {
+$('#semi-mobile').change(function() {
     if (this.checked) {
         followCamMode = 2;
     }
 });
 
-$('.cone').click(function() {
+$('#cone').change(function() {
     if (this.checked) {
         objectToMove = 'cone';
     }
 });
 
-$('.earth').click(function() {
+$('#earth').change(function() {
     if (this.checked) {
         objectToMove = 'earth';
     }

@@ -27,21 +27,21 @@ block content
                     hr
                     .btn-group(data-toggle='buttons')
                         label.btn.btn-info.active
-                            input#option1(type='radio', name='options', autocomplete='off', checked='', class='fixe')
+                            input#fixe(type='radio', name='options', autocomplete='off', checked='')
                             |  Caméra Fixe
                         label.btn.btn-info
-                            input#option2(type='radio', name='options', autocomplete='off', class="mobile")
+                            input#mobile(type='radio', name='options', autocomplete='off')
                             |  Caméra Mobile
                         label.btn.btn-info
-                            input#option3(type='radio', name='options', autocomplete='off', class="semi-mobile")
+                            input#semi-mobile(type='radio', name='options', autocomplete='off')
                             |  Caméra Semi-Mobile
                     hr
                     .btn-group(data-toggle='buttons')
                         label.btn.btn-default.active
-                            input#option1(type='radio', name='options', autocomplete='off', checked='', class="cone")
+                            input#cone(type='radio', name='options', autocomplete='off', checked='')
                             |  Cone
                         label.btn.btn-default
-                            input#option2(type='radio', name='options', autocomplete='off', class="earth")
+                            input#earth(type='radio', name='options', autocomplete='off')
                             |  Terre
         script(src='/javascripts/modules/socket.io.min.js')
         script(src='/javascripts/modules/three.min.js')
