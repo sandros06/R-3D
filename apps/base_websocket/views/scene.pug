@@ -3,11 +3,11 @@ block content
  .container-fluid
       .row
         .col-lg-6.scene-screen
-            div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
             #container
         .col-lg-2
             #graph
                 canvas(style='',id='graphCanvas', width='300', height='200')
+                canvas(style='',id='graphCanvas2', width='300', height='200')
         .col-lg-4.block-panel
                 .panel.panel-default
                     .panel-heading
@@ -41,6 +41,7 @@ block content
                         label.btn.btn-default.active
                             input#earth(type='radio', name='options', autocomplete='off')
                             |  Terre
+                div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
         script(src='/javascripts/modules/socket.io.min.js')
         script(src='/javascripts/modules/three.min.js')
         script(src='/javascripts/modules/stats.min.js')

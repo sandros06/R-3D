@@ -136,8 +136,8 @@ function initEarth() {
     light.castShadow = true;
     scene.add(light);
 
+    camera.lookAt( 0,0,0);
     objectToMove = camera;
-    camera.lookAt( camera.up );
 }
 
 function initCone () {
@@ -298,18 +298,34 @@ function update() {
       objectToMove.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
       objectToMove.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
 
+      // GRAPH
+      rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
+      rotLines.z.append(new Date().getTime(), result.orientation.gammaDeg);
+
+      var tmpAccX,tmpAccY,tmpAccZ;
       if( notchFilter )
       {
-        objectToMove.translateX(applyFiltre(result.motion.acceleration.x));
-        objectToMove.translateY(applyFiltre(result.motion.acceleration.y));
-        objectToMove.translateZ(applyFiltre(result.motion.acceleration.z));
+        tmpAccX = applyFiltre(result.motion.acceleration.x);
+        tmpAccY = applyFiltre(result.motion.acceleration.y);
+        tmpAccZ = applyFiltre(result.motion.acceleration.z);
       }
       else
       {
-        objectToMove.translateX(result.motion.acceleration.x);
-        objectToMove.translateY(result.motion.acceleration.y);
-        objectToMove.translateZ(result.motion.acceleration.z);
+        tmpAccX = result.motion.acceleration.x;
+        tmpAccY = result.motion.acceleration.y;
+        tmpAccZ = result.motion.acceleration.z;
       }
+
+
+      objectToMove.translateX(tmpAccX);
+      objectToMove.translateY(tmpAccY);
+      objectToMove.translateZ(tmpAccZ);
+      // GRAPH
+      accLines.x.append(new Date().getTime(), tmpAccX);
+      accLines.y.append(new Date().getTime(), tmpAccY);
+      accLines.z.append(new Date().getTime(), tmpAccZ);
+
 
   } 
   else if (solutionNumber == 2) 
@@ -342,21 +358,31 @@ function update() {
       objectToMove.rotation.x = 2 * Math.PI * tmpBetaDeg / 360;
       objectToMove.rotation.y = 2 * Math.PI * tmpGammaDeg / 360;
       objectToMove.rotation.z = 2 * Math.PI * tmpAlphaDeg / 360;
+        // GRAPH
+      rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
     }
     else 
     {
       objectToMove.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
       objectToMove.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
       objectToMove.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      // GRAPH
+      rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
+      rotLines.z.append(new Date().getTime(), result.orientation.gammaDeg);
+
     }
 
-    // GRAPH
-    rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
-    rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
+    
 
     //NIPPLE
     objectToMove.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
     objectToMove.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
+    // GRAPH
+    accLines.x.append(new Date().getTime(), result.nipple.force*Math.cos(result.nipple.angleRad));
+    accLines.y.append(new Date().getTime(), result.nipple.force*Math.sin(result.nipple.angleRad));
+
   }
 
   resetSensorData();
@@ -381,6 +407,20 @@ graph.addTimeSeries(rotLines.x, {strokeStyle: '#ff0000'});
 graph.addTimeSeries(rotLines.y, {strokeStyle: '#00ff00'});
 graph.addTimeSeries(rotLines.z, {strokeStyle: '#0000ff'});
 
+
+var graph2 = new SmoothieChart();
+
+graph2.streamTo(document.getElementById('graphCanvas2'));
+
+var accLines = {
+  x: new TimeSeries(),
+  y: new TimeSeries(),
+  z: new TimeSeries()
+};
+
+graph2.addTimeSeries(accLines.x, {strokeStyle: '#ff0000'});
+graph2.addTimeSeries(accLines.y, {strokeStyle: '#00ff00'});
+graph2.addTimeSeries(accLines.z, {strokeStyle: '#0000ff'});
 
 /*
  *
@@ -453,13 +493,13 @@ $('#semi-mobile').change(function() {
 
 $('#cone').change(function() {
     if (this.checked) {
-        objectToMove = 'cone';
+        initCone();
     }
 });
 
 $('#earth').change(function() {
     if (this.checked) {
-        objectToMove = 'earth';
+        initEarth();
     }
 });
 /*
