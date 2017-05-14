@@ -42,44 +42,46 @@ kalmanAlpha.setAngle(0); // Todo angle
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
 
 function initEarth() {
-
-  // Application des textures  
+  
+    // Application des textures 
     var textureLoader = new THREE.TextureLoader();
-    var texture1 = textureLoader.load('/images/earthmap1k.jpg');
-    texture1.minFilter = THREE.LinearFilter;
-    var texture2 = textureLoader.load('/images/earthbump1k.jpg');
-    texture2.minFilter = THREE.LinearFilter;
-    var texture3 = textureLoader.load('/images/earthspec1k.jpg');
-    texture3.minFilter = THREE.LinearFilter;
-    //var texture_stars = textureLoader.load('images/galaxy_starfield.png');
-    //texture_stars.minFilter = THREE.LinearFilter;
-    var texture_cloud = textureLoader.load('images/fair_clouds_8k.jpg');
-    texture_cloud.minFilter = THREE.LinearFilter;
 
-    // on créé la sphère pour la terre
     var geometry_earth = new THREE.SphereGeometry( 20, 32, 32 );
-    var material_earth = new THREE.MeshPhongMaterial({
-        map : texture1,
-        bumpMap : texture2,
-        bumpScale : 0.5,
-        specularMap : texture3,
-        specular : new THREE.Color('grey')
-    });
+    var material_earth = new THREE.MeshPhongMaterial();
+
+    material_earth.map = textureLoader.load('/images/earthmap1k.jpg');
+
+    material_earth.bumpMap = textureLoader.load('/images/earthbump1k.jpg');
+    material_earth.scale = 0.5; // between 0 and 1
+
+    material_earth.shininess = 25;
+    material_earth.specularMap = textureLoader.load('/images/earthspec1k.jpg');
+    material_earth.specular = new THREE.Color(0x2f2f2f);
+
     mesh_earth = new THREE.Mesh( geometry_earth, material_earth);
     scene.add( mesh_earth );
 
+    // Mise en place des nuages
+    /*
+    var geometry_cloud = new THREE.SphereGeometry( 20, 32, 32);
 
-    // Mise en place des étoiles
-    /*var geometry_stars  = new THREE.SphereGeometry( 60, 32, 32);
+    var cloudMap = textureLoader.load('./images/earthcloudmap.jpg');
+    var cloudAlpha = textureLoader.load('./images/earthcloudmaptrans.jpg');
 
-    // create the material, using a texture of startfield
-    var material_stars  = new THREE.MeshBasicMaterial({
-        map : texture_stars,
-        side : THREE.BackSide
+    console.log( "5" );
+
+    var material_cloud  = new THREE.MeshPhongMaterial({
+        map		: cloudMap,
+        side        : THREE.DoubleSide,
+        opacity     : 0.8,
+        transparent : true,
+        depthWrite  : false
     });
-    // create the mesh based on geometry and material
-    var mesh_stars  = new THREE.Mesh(geometry_stars, material_stars);
-    scene.add( mesh_stars );*/
+
+    var mesh_cloud  = new THREE.Mesh(geometry_cloud, material_cloud);
+    mesh_earth.add( mesh_cloud );
+    */
+
 
     //Etoiles cube
     var imagePrefix = "/images/starfield_";
@@ -87,7 +89,6 @@ function initEarth() {
     var imageSuffix = ".jpg";
     var skyGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
     
-
     var materialArray = [];
     for (var i = 0; i < 6; i++)
     {
@@ -105,18 +106,6 @@ function initEarth() {
     scene.add( skyBox );
 
 
-    // Mise en place des nuages
-    /*
-    var geometry_cloud = new THREE.SphereGeometry( 203, 32, 32);
-    var material_cloud  = new THREE.MeshPhongMaterial({
-        map : texture_cloud,
-        transparent : true,
-        opacity : 0.5
-    });
-    var mesh_cloud  = new THREE.Mesh(geometry_cloud, material_cloud);
-    scene.add( mesh_cloud );
-    */
-
     // Lights
     if (light !== null) {
       scene.remove(light);
@@ -130,8 +119,11 @@ function initEarth() {
       scene.remove(cone);
     }
 
-    light = new THREE.AmbientLight(0xffffff);
-    light.position.set(0,10,50).normalize();
+    ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambLight);
+
+    light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(50,100,50).normalize();
     light.castShadow = true;
     scene.add(light);
 
@@ -140,7 +132,7 @@ function initEarth() {
 }
 
 function initCone () {
-    // --> cone
+  // --> cone
   camera.lookAt(0, 0, 0);
 
   // Grid
