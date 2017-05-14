@@ -10,7 +10,7 @@ var container;
 var width, height;
 
 var camera, scene, renderer, controls, stats;
-var objectToMove, cone = null, mesh_earth = null ;
+var objectToMove, cone = null, mesh_earth = null, skyBox = null;
 var light = null, line = null;
 
 var kalmanActivated = false, notchFilter = false;
@@ -81,11 +81,11 @@ function initEarth() {
     var mesh_stars  = new THREE.Mesh(geometry_stars, material_stars);
     scene.add( mesh_stars );*/
 
-    /* Etoiles cube
+    //Etoiles cube
     var imagePrefix = "/images/starfield_";
     var directions  = ["rt", "lf", "up", "dn", "ft", "bk"];
-    var imageSuffix = ".tga";
-    var skyGeometry = new THREE.CubeGeometry( 200, 200, 200 );
+    var imageSuffix = ".jpg";
+    var skyGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
     
 
     var materialArray = [];
@@ -101,9 +101,8 @@ function initEarth() {
     }
       
     var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-    var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+    skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
     scene.add( skyBox );
-    */
 
 
     // Mise en place des nuages
@@ -192,6 +191,10 @@ function initCone () {
   if (mesh_earth !== null) {
     scene.remove(mesh_earth);
   }
+
+  if (skyBox !== null) {
+      scene.remove(skyBox);
+    }
 
   light = new THREE.DirectionalLight( 0xffffff );
   light.position.set( 0, 10, 50 ).normalize();
