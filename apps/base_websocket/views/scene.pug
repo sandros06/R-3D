@@ -2,13 +2,13 @@ extends layout
 block content
  .container-fluid
       .row
-        .col-lg-6.scene-screen
+        .col-lg-6.scene-screen.col-md-6
             #container
-        .col-lg-2
+        .col-lg-2.col-md-2
             #graph
-                canvas(style='',id='graphCanvas', width='300', height='200')
-                canvas(style='',id='graphCanvas2', width='300', height='200')
-        .col-lg-4.block-panel
+                canvas(style='',id='graphCanvas', width='200%', height='200')
+                canvas(style='',id='graphCanvas2', width='200%', height='200')
+        .col-lg-4.block-panel.col-md-4
                 .panel.panel-default
                     .panel-heading
                         h3.panel-title  Menu

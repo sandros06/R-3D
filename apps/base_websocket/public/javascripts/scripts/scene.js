@@ -463,6 +463,7 @@ function applyFiltre(value){
  * MENU
  * 
  */
+
 window.setInterval(function(){
     if (solutionNumber == 1){
       $('#kalmanCheck').hide();
@@ -529,6 +530,7 @@ $('#earth').change(function() {
 $('#reset').on('click', function(event) {
   resetPosition();
 });
+
 /*
  *
  *      START CODE
