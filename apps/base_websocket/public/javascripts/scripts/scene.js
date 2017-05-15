@@ -13,7 +13,7 @@ var camera, scene, renderer, controls, stats;
 var objectToMove, cone = null, mesh_earth = null, skyBox = null;
 var light = null, line = null;
 
-var kalmanActivated = false, notchFilter = false, pilotCamera = true;
+var kalmanActivated = false, notchFilter = false, pilotCamera = false;
 
 var followCamMode = 0;
 var sceneMode = 1 // 1 = cone // 2 = earth 
@@ -228,8 +228,8 @@ function initContainer() {
   scene = new THREE.Scene();
   scene.add(camera);
 
-  initEarth();
-  //initCone();
+  //initEarth();
+  initCone();
 
   // Renderer
   renderer = new THREE.WebGLRenderer( {
@@ -327,6 +327,7 @@ function update() {
       objectToMove.translateX(tmpAccX);
       objectToMove.translateY(tmpAccY);
       objectToMove.translateZ(tmpAccZ);
+
       // GRAPH
       accLines.x.append(new Date().getTime(), tmpAccX);
       accLines.y.append(new Date().getTime(), tmpAccY);
@@ -387,8 +388,13 @@ function update() {
       var distance = camera.position.distanceTo(mesh_earth.position);
       
       //NIPPLE
-      var nippleForce = result.nipple.force*Math.sin(result.nipple.angleRad);
-      if (distance >= 40 || distance <= 200 )
+      var nippleForce = result.nipple.force * Math.sin(result.nipple.angleRad);
+
+      if (nippleForce < 0 && distance >= 40 )
+      {
+        distance += nippleForce;
+      }
+      else if (nippleForce > 0 && distance <= 200 )
       {
         distance += nippleForce;
       }
@@ -417,6 +423,7 @@ function update() {
     accLines.y.append(new Date().getTime(), result.nipple.force*Math.sin(result.nipple.angleRad));
   }
 
+  
   resetSensorData();
 }
 
@@ -499,6 +506,14 @@ window.setInterval(function(){
       $('#kalmanCheck').hide();
       $('#notchFilterCheck').hide();
     }
+    if(sceneMode == 2 && solutionNumber == 2)
+    {
+      $('#pilote').show();
+    }
+    else 
+    {
+      $('#pilote').hide();
+    }
 }, 100);
 
 $('#kalman').click(function() {
@@ -538,14 +553,26 @@ $('#semi-mobile').change(function() {
 $('#cone').change(function() {
     if (this.checked) {
         sceneMode = 1;
+        pilotCamera = false;
         initCone();
+        resetPosition();
+
+        $('#camFixe').show();
+        $('#camMobile').show();
+        $('#camSemi-mobile').show();
     }
 });
 
 $('#earth').change(function() {
     if (this.checked) {
         sceneMode = 2;
+        pilotCamera = true;
         initEarth();
+        resetPosition();
+
+        $('#camFixe').hide();
+        $('#camMobile').hide();
+        $('#camSemi-mobile').hide();
     }
 });
 
@@ -553,6 +580,14 @@ $('#earth').change(function() {
 
 $('#reset').on('click', function(event) {
   resetPosition();
+});
+
+$('#pilote').on('click', function(event) {
+  if(pilotCamera){
+    pilotCamera = false;
+  }else{
+    pilotCamera = true;
+  }
 });
 /*
  *
