@@ -16,6 +16,7 @@ var light = null, line = null;
 var kalmanActivated = false, notchFilter = false, pilotCamera = true;
 
 var followCamMode = 0;
+var sceneMode = 1 // 1 = cone // 2 = earth 
 var previousTime = Date.now();
 // Menu variables
 
@@ -194,6 +195,17 @@ function initCone () {
   scene.add(light);
 
   objectToMove = cone;
+}
+
+function resetPosition(){
+  if(sceneMode == 1){
+    objectToMove.position.set(0,10,10);
+    camera.position.set(0, 10, 100);
+  }else if(sceneMode == 2){
+    objectToMove.position.set(0,10,100);
+  }else{
+    objectToMove.position.set(0,10,10);
+  }
 }
 
 function initContainer() {
@@ -476,6 +488,18 @@ function applyFiltre(value){
  * MENU
  * 
  */
+window.setInterval(function(){
+    if (solutionNumber == 1){
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').show();
+    } else if (solutionNumber == 2){
+      $('#kalmanCheck').show();
+      $('#notchFilterCheck').hide();
+    } else {
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').hide();
+    }
+}, 100);
 
 $('#kalman').click(function() {
     if (this.checked) {
@@ -513,14 +537,22 @@ $('#semi-mobile').change(function() {
 
 $('#cone').change(function() {
     if (this.checked) {
+        sceneMode = 1;
         initCone();
     }
 });
 
 $('#earth').change(function() {
     if (this.checked) {
+        sceneMode = 2;
         initEarth();
     }
+});
+
+
+
+$('#reset').on('click', function(event) {
+  resetPosition();
 });
 /*
  *

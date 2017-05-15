@@ -12,12 +12,12 @@ block content
                 .panel.panel-default
                     .panel-heading
                         h3.panel-title  Menu
-                    .panel-body
+                    .panel-body#kalmanCheck
                         .checkbox
                             label
                                 input(type='checkbox' id="kalman")
                                 |  Kalman
-                    .panel-body 
+                    .panel-body#notchFilterCheck
                         .checkbox
                             label
                                 input(type='checkbox' id="notchFilter")
@@ -41,6 +41,8 @@ block content
                         label.btn.btn-default.active
                             input#earth(type='radio', name='options', autocomplete='off')
                             |  Terre
+                    hr
+                    a#reset.btn.btn-large.btn-danger(href='#') Reset
                 div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
         script(src='/javascripts/modules/socket.io.min.js')
         script(src='/javascripts/modules/three.min.js')
