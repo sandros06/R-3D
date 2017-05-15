@@ -18,7 +18,7 @@ int main(int argc, char **argv)
         detector.findTransform(img, img2, rot, tr, &r);
 
         std::cout << rot << std::endl;
-        std::cout << tr << std::endl;
+        std::cout << r * tr << std::endl;
     }
 
     return 0;
