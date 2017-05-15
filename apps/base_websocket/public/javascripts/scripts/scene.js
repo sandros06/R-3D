@@ -13,7 +13,7 @@ var camera, scene, renderer, controls, stats;
 var objectToMove, cone = null, mesh_earth = null, skyBox = null;
 var light = null, line = null;
 
-var kalmanActivated = false, notchFilter = false;
+var kalmanActivated = false, notchFilter = false, pilotCamera = true;
 
 var followCamMode = 0;
 var previousTime = Date.now();
@@ -216,9 +216,8 @@ function initContainer() {
   scene = new THREE.Scene();
   scene.add(camera);
 
-  // TESTSTTETSTST
-  //initEarth();
-  initCone();
+  initEarth();
+  //initCone();
 
   // Renderer
   renderer = new THREE.WebGLRenderer( {
@@ -320,11 +319,11 @@ function update() {
       accLines.x.append(new Date().getTime(), tmpAccX);
       accLines.y.append(new Date().getTime(), tmpAccY);
       accLines.z.append(new Date().getTime(), tmpAccZ);
-
-
   } 
   else if (solutionNumber == 2) 
   {
+    var rotationX, rotationY, rotationZ;
+
     if( kalmanActivated )
     {
       var tmpBetaDeg,tmpGammaDeg,tmpAlphaDeg = 0;
@@ -350,34 +349,60 @@ function update() {
         tmpAlphaDeg =kalmanAlpha.getAngle(result.orientation.alphaDeg);
       }
 
-      objectToMove.rotation.x = 2 * Math.PI * tmpBetaDeg / 360;
-      objectToMove.rotation.y = 2 * Math.PI * tmpGammaDeg / 360;
-      objectToMove.rotation.z = 2 * Math.PI * tmpAlphaDeg / 360;
-        // GRAPH
+      rotationX = 2 * Math.PI * tmpBetaDeg / 360;
+      rotationY = 2 * Math.PI * tmpGammaDeg / 360;
+      rotationZ = 2 * Math.PI * tmpAlphaDeg / 360;
+      // GRAPH
       rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
       rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
     }
     else 
     {
-      objectToMove.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
-      objectToMove.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
-      objectToMove.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      rotationX = 2 * Math.PI * result.orientation.betaDeg / 360;
+      rotationY = 2 * Math.PI * result.orientation.gammaDeg / 360;
+      rotationZ = 2 * Math.PI * result.orientation.alphaDeg / 360;
       // GRAPH
       rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
       rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
       rotLines.z.append(new Date().getTime(), result.orientation.gammaDeg);
-
     }
 
-    
+    if ( pilotCamera == true )
+    {
+      var dir = new THREE.Vector3(0, 0, -1);
+      dir.applyEuler(camera.rotation, camera.rotation.order);
 
-    //NIPPLE
-    objectToMove.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
-    objectToMove.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
+      var distance = camera.position.distanceTo(mesh_earth.position);
+      
+      //NIPPLE
+      var nippleForce = result.nipple.force*Math.sin(result.nipple.angleRad);
+      if (distance >= 40 || distance <= 200 )
+      {
+        distance += nippleForce;
+      }
+
+      // Kalman or gyrometer rotation
+      objectToMove.position.x = distance * Math.cos(rotationX) * Math.cos(rotationZ);
+      objectToMove.position.y = distance * Math.sin(rotationX) * Math.cos(rotationZ);
+      objectToMove.position.z = distance * Math.sin(rotationZ);
+
+      camera.lookAt( mesh_earth.position );
+    }
+    else
+    {
+      // Kalman or gyrometer rotation
+      objectToMove.rotation.x = rotationX;
+      objectToMove.rotation.y = rotationY;
+      objectToMove.rotation.z = rotationZ;
+
+      //NIPPLE
+      objectToMove.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
+      objectToMove.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
+    }
+
     // GRAPH
     accLines.x.append(new Date().getTime(), result.nipple.force*Math.cos(result.nipple.angleRad));
     accLines.y.append(new Date().getTime(), result.nipple.force*Math.sin(result.nipple.angleRad));
-
   }
 
   resetSensorData();
