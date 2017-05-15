@@ -1,7 +1,19 @@
  var hub = io.connect(window.location.origin);
-    hub.emit("solution", {
+
+function sendSolutionNumber(){
+  hub.emit("solution", {
     number : 2
-    });
+    }); 
+}
+sendSolutionNumber();
+   
+// Pour eviter la désync 
+hub.on("callMobile",function(event) {
+    if(event.needSolution){
+      sendSolutionNumber();
+    }
+
+});
 
 var joystick = nipplejs.create({
             zone: document.getElementById('nipple'),
@@ -44,16 +56,22 @@ var els = {
 
 // Print data into elements
 
-
 joystick.on('move', function (evt, nipple) {
 	debug(nipple);
 	hub.emit("deviceNipple", {
 	    force : nipple.force,
 	    angleRad : nipple.angle.radian
     });
-}).on('end', function (evt, nipple) {
-	console.log("noo");
 });
+
+joystick.on('end', function (evt, nipple) {
+  debug(nipple);
+  hub.emit("deviceNipple", {
+      force : 0,
+      angleRad : 0
+    });
+});
+
 
 
 function debug(obj) {
