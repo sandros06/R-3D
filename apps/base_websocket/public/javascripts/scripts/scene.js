@@ -459,6 +459,18 @@ function applyFiltre(value){
  * MENU
  * 
  */
+window.setInterval(function(){
+    if (solutionNumber == 1){
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').show();
+    } else if (solutionNumber == 2){
+      $('#kalmanCheck').show();
+      $('#notchFilterCheck').hide();
+    } else {
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').hide();
+    }
+}, 100);
 
 $('#kalman').click(function() {
     if (this.checked) {
