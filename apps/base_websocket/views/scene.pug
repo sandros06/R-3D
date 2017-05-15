@@ -24,13 +24,13 @@ block content
                                 | Coupe Bande
                     hr
                     .btn-group(data-toggle='buttons')
-                        label.btn.btn-info.active
+                        label#camFixe.btn.btn-info.active
                             input#fixe(type='radio', name='options', autocomplete='off', checked='')
                             |  Caméra Fixe
-                        label.btn.btn-info
+                        label#camMobile.btn.btn-info
                             input#mobile(type='radio', name='options', autocomplete='off')
                             |  Caméra Mobile
-                        label.btn.btn-info
+                        label#camSemi-mobile.btn.btn-info
                             input#semi-mobile(type='radio', name='options', autocomplete='off')
                             |  Caméra Semi-Mobile
                     hr
@@ -41,6 +41,8 @@ block content
                         label.btn.btn-default.active
                             input#earth(type='radio', name='options', autocomplete='off')
                             |  Terre
+                    hr
+                    a#pilote.btn.btn-large.btn-danger(href='#') Pilote camera 
                     hr
                     a#reset.btn.btn-large.btn-danger(href='#') Reset
                 div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
