@@ -10,13 +10,26 @@ var container;
 var width, height;
 
 var camera, scene, renderer, controls, stats;
-var objectToMove, cone = null, mesh_earth = null ;
+var objectToMove, cone = null, mesh_earth = null, skyBox = null;
 var light = null, line = null;
 
-var kalmanActivated = false, notchFilter = true;
+var kalmanActivated = false, notchFilter = false, pilotCamera = false;
 
-var followCamMode = 1;
+var followCamMode = 0;
+var sceneMode = 1 // 1 = cone // 2 = earth 
 var previousTime = Date.now();
+// Menu variables
+
+var kalmanActivation = true;
+
+function toggleKalman() {
+  if(kalmanActivation){
+    kalmanActivation = false;
+  }else{
+    kalmanActivation = true;
+  }
+}
+
 
 // Kalman variable
 var kalmanBeta = new Kalman();
@@ -30,52 +43,53 @@ kalmanAlpha.setAngle(0); // Todo angle
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
 
 function initEarth() {
-
-  // Application des textures  
+  
+    // Application des textures 
     var textureLoader = new THREE.TextureLoader();
-    var texture1 = textureLoader.load('/images/earthmap1k.jpg');
-    texture1.minFilter = THREE.LinearFilter;
-    var texture2 = textureLoader.load('/images/earthbump1k.jpg');
-    texture2.minFilter = THREE.LinearFilter;
-    var texture3 = textureLoader.load('/images/earthspec1k.jpg');
-    texture3.minFilter = THREE.LinearFilter;
-    //var texture_stars = textureLoader.load('images/galaxy_starfield.png');
-    //texture_stars.minFilter = THREE.LinearFilter;
-    var texture_cloud = textureLoader.load('images/fair_clouds_8k.jpg');
-    texture_cloud.minFilter = THREE.LinearFilter;
 
-    // on créé la sphère pour la terre
     var geometry_earth = new THREE.SphereGeometry( 20, 32, 32 );
-    var material_earth = new THREE.MeshPhongMaterial({
-        map : texture1,
-        bumpMap : texture2,
-        bumpScale : 0.5,
-        specularMap : texture3,
-        specular : new THREE.Color('grey')
-    });
+    var material_earth = new THREE.MeshPhongMaterial();
+
+    material_earth.map = textureLoader.load('/images/earthmap1k.jpg');
+
+    material_earth.bumpMap = textureLoader.load('/images/earthbump1k.jpg');
+    material_earth.scale = 0.5; // between 0 and 1
+
+    material_earth.shininess = 25;
+    material_earth.specularMap = textureLoader.load('/images/earthspec1k.jpg');
+    material_earth.specular = new THREE.Color(0x2f2f2f);
+
     mesh_earth = new THREE.Mesh( geometry_earth, material_earth);
     scene.add( mesh_earth );
 
+    // Mise en place des nuages
+    /*
+    var geometry_cloud = new THREE.SphereGeometry( 20, 32, 32);
 
-    // Mise en place des étoiles
-    /*var geometry_stars  = new THREE.SphereGeometry( 60, 32, 32);
+    var cloudMap = textureLoader.load('./images/earthcloudmap.jpg');
+    var cloudAlpha = textureLoader.load('./images/earthcloudmaptrans.jpg');
 
-    // create the material, using a texture of startfield
-    var material_stars  = new THREE.MeshBasicMaterial({
-        map : texture_stars,
-        side : THREE.BackSide
+    console.log( "5" );
+
+    var material_cloud  = new THREE.MeshPhongMaterial({
+        map		: cloudMap,
+        side        : THREE.DoubleSide,
+        opacity     : 0.8,
+        transparent : true,
+        depthWrite  : false
     });
-    // create the mesh based on geometry and material
-    var mesh_stars  = new THREE.Mesh(geometry_stars, material_stars);
-    scene.add( mesh_stars );*/
 
-    /* Etoiles cube
+    var mesh_cloud  = new THREE.Mesh(geometry_cloud, material_cloud);
+    mesh_earth.add( mesh_cloud );
+    */
+
+
+    //Etoiles cube
     var imagePrefix = "/images/starfield_";
     var directions  = ["rt", "lf", "up", "dn", "ft", "bk"];
-    var imageSuffix = ".tga";
-    var skyGeometry = new THREE.CubeGeometry( 200, 200, 200 );
+    var imageSuffix = ".jpg";
+    var skyGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
     
-
     var materialArray = [];
     for (var i = 0; i < 6; i++)
     {
@@ -89,22 +103,9 @@ function initEarth() {
     }
       
     var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-    var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+    skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
     scene.add( skyBox );
-    */
 
-
-    // Mise en place des nuages
-    /*
-    var geometry_cloud = new THREE.SphereGeometry( 203, 32, 32);
-    var material_cloud  = new THREE.MeshPhongMaterial({
-        map : texture_cloud,
-        transparent : true,
-        opacity : 0.5
-    });
-    var mesh_cloud  = new THREE.Mesh(geometry_cloud, material_cloud);
-    scene.add( mesh_cloud );
-    */
 
     // Lights
     if (light !== null) {
@@ -119,17 +120,20 @@ function initEarth() {
       scene.remove(cone);
     }
 
-    light = new THREE.AmbientLight(0xffffff);
-    light.position.set(0,10,50).normalize();
+    ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambLight);
+
+    light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(50,100,50).normalize();
     light.castShadow = true;
     scene.add(light);
 
+    camera.lookAt( 0,0,0);
     objectToMove = camera;
-    camera.lookAt( camera.up );
 }
 
 function initCone () {
-    // --> cone
+  // --> cone
   camera.lookAt(0, 0, 0);
 
   // Grid
@@ -181,12 +185,27 @@ function initCone () {
     scene.remove(mesh_earth);
   }
 
+  if (skyBox !== null) {
+      scene.remove(skyBox);
+    }
+
   light = new THREE.DirectionalLight( 0xffffff );
   light.position.set( 0, 10, 50 ).normalize();
   light.castShadow = true;
   scene.add(light);
 
   objectToMove = cone;
+}
+
+function resetPosition(){
+  if(sceneMode == 1){
+    objectToMove.position.set(0,10,10);
+    camera.position.set(0, 10, 100);
+  }else if(sceneMode == 2){
+    objectToMove.position.set(0,10,100);
+  }else{
+    objectToMove.position.set(0,10,10);
+  }
 }
 
 function initContainer() {
@@ -209,8 +228,7 @@ function initContainer() {
   scene = new THREE.Scene();
   scene.add(camera);
 
-  // TESTSTTETSTST
-  initEarth();
+  //initEarth();
   initCone();
 
   // Renderer
@@ -231,6 +249,9 @@ function initContainer() {
   // Stat
   stats = new Stats();
   stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  stats.domElement.style.position   = 'absolute'
+  stats.domElement.style.left  = '0px'
+  stats.domElement.style.bottom    = '0px'
   container.appendChild( stats.domElement );
 
   // Event listener
@@ -283,22 +304,39 @@ function update() {
       objectToMove.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
       objectToMove.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
 
+      // GRAPH
+      rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
+      rotLines.z.append(new Date().getTime(), result.orientation.gammaDeg);
+
+      var tmpAccX,tmpAccY,tmpAccZ;
       if( notchFilter )
       {
-        objectToMove.translateX(applyFiltre(result.motion.acceleration.x));
-        objectToMove.translateY(applyFiltre(result.motion.acceleration.y));
-        objectToMove.translateZ(applyFiltre(result.motion.acceleration.z));
+        tmpAccX = applyFiltre(result.motion.acceleration.x);
+        tmpAccY = applyFiltre(result.motion.acceleration.y);
+        tmpAccZ = applyFiltre(result.motion.acceleration.z);
       }
       else
       {
-        objectToMove.translateX(result.motion.acceleration.x);
-        objectToMove.translateY(result.motion.acceleration.y);
-        objectToMove.translateZ(result.motion.acceleration.z);
+        tmpAccX = result.motion.acceleration.x;
+        tmpAccY = result.motion.acceleration.y;
+        tmpAccZ = result.motion.acceleration.z;
       }
 
+
+      objectToMove.translateX(tmpAccX);
+      objectToMove.translateY(tmpAccY);
+      objectToMove.translateZ(tmpAccZ);
+
+      // GRAPH
+      accLines.x.append(new Date().getTime(), tmpAccX);
+      accLines.y.append(new Date().getTime(), tmpAccY);
+      accLines.z.append(new Date().getTime(), tmpAccZ);
   } 
   else if (solutionNumber == 2) 
   {
+    var rotationX, rotationY, rotationZ;
+
     if( kalmanActivated )
     {
       var tmpBetaDeg,tmpGammaDeg,tmpAlphaDeg = 0;
@@ -324,26 +362,68 @@ function update() {
         tmpAlphaDeg =kalmanAlpha.getAngle(result.orientation.alphaDeg);
       }
 
-      objectToMove.rotation.x = 2 * Math.PI * tmpBetaDeg / 360;
-      objectToMove.rotation.y = 2 * Math.PI * tmpGammaDeg / 360;
-      objectToMove.rotation.z = 2 * Math.PI * tmpAlphaDeg / 360;
+      rotationX = 2 * Math.PI * tmpBetaDeg / 360;
+      rotationY = 2 * Math.PI * tmpGammaDeg / 360;
+      rotationZ = 2 * Math.PI * tmpAlphaDeg / 360;
+      // GRAPH
+      rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
     }
     else 
     {
-      objectToMove.rotation.x = 2 * Math.PI * result.orientation.betaDeg / 360;
-      objectToMove.rotation.y = 2 * Math.PI * result.orientation.gammaDeg / 360;
-      objectToMove.rotation.z = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      rotationX = 2 * Math.PI * result.orientation.betaDeg / 360;
+      rotationY = 2 * Math.PI * result.orientation.gammaDeg / 360;
+      rotationZ = 2 * Math.PI * result.orientation.alphaDeg / 360;
+      // GRAPH
+      rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
+      rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
+      rotLines.z.append(new Date().getTime(), result.orientation.gammaDeg);
+    }
+
+    if ( pilotCamera == true )
+    {
+      var dir = new THREE.Vector3(0, 0, -1);
+      dir.applyEuler(camera.rotation, camera.rotation.order);
+
+      var distance = camera.position.distanceTo(mesh_earth.position);
+      
+      //NIPPLE
+      var nippleForce = result.nipple.force * Math.sin(result.nipple.angleRad);
+
+      if (nippleForce < 0 && distance >= 40 )
+      {
+        distance += nippleForce;
+      }
+      else if (nippleForce > 0 && distance <= 200 )
+      {
+        distance += nippleForce;
+      }
+
+      // Kalman or gyrometer rotation
+      objectToMove.position.x = distance * Math.cos(rotationX) * Math.cos(rotationZ);
+      objectToMove.position.y = distance * Math.sin(rotationX) * Math.cos(rotationZ);
+      objectToMove.position.z = distance * Math.sin(rotationZ);
+
+      camera.lookAt( mesh_earth.position );
+    }
+    else
+    {
+      // Kalman or gyrometer rotation
+      objectToMove.rotation.x = rotationX;
+      objectToMove.rotation.y = rotationY;
+      objectToMove.rotation.z = rotationZ;
+
+      //NIPPLE
+      objectToMove.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
+      objectToMove.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
     }
 
     // GRAPH
-    rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
-    rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
-
-    //NIPPLE
-    objectToMove.translateX(result.nipple.force*Math.cos(result.nipple.angleRad));
-    objectToMove.translateY(result.nipple.force*Math.sin(result.nipple.angleRad));
+    accLines.x.append(new Date().getTime(), result.nipple.force*Math.cos(result.nipple.angleRad));
+    accLines.y.append(new Date().getTime(), result.nipple.force*Math.sin(result.nipple.angleRad));
   }
 
+  
   resetSensorData();
 }
 
@@ -366,6 +446,20 @@ graph.addTimeSeries(rotLines.x, {strokeStyle: '#ff0000'});
 graph.addTimeSeries(rotLines.y, {strokeStyle: '#00ff00'});
 graph.addTimeSeries(rotLines.z, {strokeStyle: '#0000ff'});
 
+
+var graph2 = new SmoothieChart();
+
+graph2.streamTo(document.getElementById('graphCanvas2'));
+
+var accLines = {
+  x: new TimeSeries(),
+  y: new TimeSeries(),
+  z: new TimeSeries()
+};
+
+graph2.addTimeSeries(accLines.x, {strokeStyle: '#ff0000'});
+graph2.addTimeSeries(accLines.y, {strokeStyle: '#00ff00'});
+graph2.addTimeSeries(accLines.z, {strokeStyle: '#0000ff'});
 
 /*
  *
@@ -396,7 +490,105 @@ function applyFiltre(value){
   }
 }
 
+/*
+ *
+ * MENU
+ * 
+ */
+window.setInterval(function(){
+    if (solutionNumber == 1){
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').show();
+    } else if (solutionNumber == 2){
+      $('#kalmanCheck').show();
+      $('#notchFilterCheck').hide();
+    } else {
+      $('#kalmanCheck').hide();
+      $('#notchFilterCheck').hide();
+    }
+    if(sceneMode == 2 && solutionNumber == 2)
+    {
+      $('#pilote').show();
+    }
+    else 
+    {
+      $('#pilote').hide();
+    }
+}, 100);
 
+$('#kalman').click(function() {
+    if (this.checked) {
+        kalmanActivated = true;
+    } else {
+        kalmanActivated = false;
+    }
+});
+
+$('#notchFilter').click(function() {
+    if (this.checked) {
+        notchFilter = true;
+    } else {
+        notchFilter = false;
+    }
+});
+
+$('#fixe').change(function() {
+    if (this.checked) {
+        followCamMode = 0;
+    }
+});
+
+$('#mobile').change(function() {
+    if (this.checked) {
+        followCamMode = 1;
+    }
+});
+
+$('#semi-mobile').change(function() {
+    if (this.checked) {
+        followCamMode = 2;
+    }
+});
+
+$('#cone').change(function() {
+    if (this.checked) {
+        sceneMode = 1;
+        pilotCamera = false;
+        initCone();
+        resetPosition();
+
+        $('#camFixe').show();
+        $('#camMobile').show();
+        $('#camSemi-mobile').show();
+    }
+});
+
+$('#earth').change(function() {
+    if (this.checked) {
+        sceneMode = 2;
+        pilotCamera = true;
+        initEarth();
+        resetPosition();
+
+        $('#camFixe').hide();
+        $('#camMobile').hide();
+        $('#camSemi-mobile').hide();
+    }
+});
+
+
+
+$('#reset').on('click', function(event) {
+  resetPosition();
+});
+
+$('#pilote').on('click', function(event) {
+  if(pilotCamera){
+    pilotCamera = false;
+  }else{
+    pilotCamera = true;
+  }
+});
 /*
  *
  *      START CODE

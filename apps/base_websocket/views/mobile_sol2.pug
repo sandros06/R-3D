@@ -1,53 +1,21 @@
-extends layout
-block content
-  #nipple
-  div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
-  #debug
-    ul
-      li.position
-        | position :
-        ul
-          li.x
-            | x :
-            span.data
-          li.y
-            | y :
-            span.data
-      li.force
-        | force :
-        span.data
-      li.pressure
-        | pressure :
-        span.data
-      li.distance
-        | distance :
-        span.data
-      li.angle
-        | angle :
-        ul
-          li.radian
-            | radian :
-            span.data
-          li.degree
-            | degree :
-            span.data
-      li.direction
-        | direction :
-        ul
-          li.x
-            | x :
-            span.data
-          li.y
-            | y :
-            span.data
-          li.angle
-            | angle :
-            span.data
-  .dump
+html
+  head
+    title= title
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="stylesheet" href="/css/bootstrap.min.css")  
+    link(rel="stylesheet" href="/stylesheets/bootstrap.css")
+    link(rel="stylesheet" href="/stylesheets/style.css")
+    script(src="/js/jquery.min.js")
+    script(src="/js/bootstrap.min.js")  
 
-  script(src='/javascripts/modules/socket.io.min.js')
-  script(src='/javascripts/scripts/mobile.js')
-  script(src='/javascripts/scripts/alert.js')
-  script(src='/js/nipplejs.min.js')
-  script(src='/javascripts/scripts/mobile_sol2.js')
-   
+  body
+    #nipple
+    div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
+    .dump
+
+    script(src='/javascripts/modules/socket.io.min.js')
+    script(src='/javascripts/scripts/mobile.js')
+    script(src='/javascripts/scripts/alert.js')
+    script(src='/js/nipplejs.min.js')
+    script(src='/javascripts/scripts/mobile_sol2.js')
+    

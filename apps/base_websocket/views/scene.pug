@@ -1,15 +1,57 @@
 extends layout
 block content
-    div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
-    #container
-      #graph
-        canvas(style='',id='graphCanvas', width='300', height='200')
-    script(src='/javascripts/modules/socket.io.min.js')
-    script(src='/javascripts/modules/three.min.js')
-    script(src='/javascripts/modules/stats.min.js')
-    script(src='/javascripts/modules/smoothie.js')
-    script(src='/javascripts/scripts/kalman.js')
-    script(src='/javascripts/scripts/hub_scene.js')
-    script(src='/javascripts/scripts/data_scene.js')
-    script(src='/javascripts/scripts/scene.js')
-    script(src='/javascripts/scripts/alert.js')
+ .container-fluid
+      .row
+        .col-lg-6.scene-screen
+            #container
+        .col-lg-2
+            #graph
+                canvas(style='',id='graphCanvas', width='300', height='200')
+                canvas(style='',id='graphCanvas2', width='300', height='200')
+        .col-lg-4.block-panel
+                .panel.panel-default
+                    .panel-heading
+                        h3.panel-title  Menu
+                    .panel-body#kalmanCheck
+                        .checkbox
+                            label
+                                input(type='checkbox' id="kalman")
+                                |  Kalman
+                    .panel-body#notchFilterCheck
+                        .checkbox
+                            label
+                                input(type='checkbox' id="notchFilter")
+                                | Coupe Bande
+                    hr
+                    .btn-group(data-toggle='buttons')
+                        label#camFixe.btn.btn-info.active
+                            input#fixe(type='radio', name='options', autocomplete='off', checked='')
+                            |  Caméra Fixe
+                        label#camMobile.btn.btn-info
+                            input#mobile(type='radio', name='options', autocomplete='off')
+                            |  Caméra Mobile
+                        label#camSemi-mobile.btn.btn-info
+                            input#semi-mobile(type='radio', name='options', autocomplete='off')
+                            |  Caméra Semi-Mobile
+                    hr
+                    .btn-group(data-toggle='buttons')
+                        label.btn.btn-default
+                            input#cone(type='radio', name='options', autocomplete='off', checked='')
+                            |  Cone
+                        label.btn.btn-default.active
+                            input#earth(type='radio', name='options', autocomplete='off')
+                            |  Terre
+                    hr
+                    a#pilote.btn.btn-large.btn-danger(href='#') Pilote camera 
+                    hr
+                    a#reset.btn.btn-large.btn-danger(href='#') Reset
+                div(data-alerts='alerts', data-titles='{"warning": "<em>Warning!</em>", "error": "<em>Error!</em>"}', data-ids='myid', data-fade='3000')
+        script(src='/javascripts/modules/socket.io.min.js')
+        script(src='/javascripts/modules/three.min.js')
+        script(src='/javascripts/modules/stats.min.js')
+        script(src='/javascripts/modules/smoothie.js')
+        script(src='/javascripts/scripts/kalman.js')
+        script(src='/javascripts/scripts/hub_scene.js')
+        script(src='/javascripts/scripts/data_scene.js')
+        script(src='/javascripts/scripts/scene.js')
+        script(src='/javascripts/scripts/alert.js')
