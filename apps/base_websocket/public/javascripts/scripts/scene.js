@@ -13,23 +13,12 @@ var camera, scene, renderer, controls, stats;
 var objectToMove, cone = null, mesh_earth = null, skyBox = null;
 var light = null, line = null;
 
-var kalmanActivated = false, notchFilter = false, pilotCamera = false;
+var previousTime = Date.now();
 
+// Menu variables
+var kalmanActivated = false, notchFilter = false, pilotCamera = false;
 var followCamMode = 0;
 var sceneMode = 1 // 1 = cone // 2 = earth 
-var previousTime = Date.now();
-// Menu variables
-
-var kalmanActivation = true;
-
-function toggleKalman() {
-  if(kalmanActivation){
-    kalmanActivation = false;
-  }else{
-    kalmanActivation = true;
-  }
-}
-
 
 // Kalman variable
 var kalmanBeta = new Kalman();
@@ -83,8 +72,7 @@ function initEarth() {
     mesh_earth.add( mesh_cloud );
     */
 
-
-    //Etoiles cube
+    //Etoiles -> skybox
     var imagePrefix = "/images/starfield_";
     var directions  = ["rt", "lf", "up", "dn", "ft", "bk"];
     var imageSuffix = ".jpg";
@@ -133,7 +121,6 @@ function initEarth() {
 }
 
 function initCone () {
-  // --> cone
   camera.lookAt(0, 0, 0);
 
   // Grid
@@ -258,7 +245,6 @@ function initContainer() {
   //window.addEventListener('resize', onWindowResize, false);
 }
 
-   
 
 function animate() {
 
@@ -271,7 +257,6 @@ function animate() {
 
   requestAnimationFrame(animate);
 }
-
 
 
 function update() {
@@ -291,8 +276,6 @@ function update() {
       previousTime = time;
     }
   }
-
-  // else no follow camera
 
   // Recuperation des data moyennés 
   var result = getSensorData();
@@ -343,6 +326,7 @@ function update() {
       var angle1 = 355;
       var angle2 = 5;
 
+      // angle jump problem
       if(result.orientation.betaDeg - 90 >= angle1 || result.orientation.betaDeg - 90 <= angle2){
         tmpBetaDeg = result.orientation.betaDeg - 90;
         kalmanBeta.setAngle(result.orientation.betaDeg - 90);
@@ -365,6 +349,7 @@ function update() {
       rotationX = 2 * Math.PI * tmpBetaDeg / 360;
       rotationY = 2 * Math.PI * tmpGammaDeg / 360;
       rotationZ = 2 * Math.PI * tmpAlphaDeg / 360;
+
       // GRAPH
       rotLines.x.append(new Date().getTime(), tmpAlphaDeg);
       rotLines.y.append(new Date().getTime(), result.orientation.alphaDeg);
@@ -374,6 +359,7 @@ function update() {
       rotationX = 2 * Math.PI * result.orientation.betaDeg / 360;
       rotationY = 2 * Math.PI * result.orientation.gammaDeg / 360;
       rotationZ = 2 * Math.PI * result.orientation.alphaDeg / 360;
+
       // GRAPH
       rotLines.x.append(new Date().getTime(), result.orientation.alphaDeg);
       rotLines.y.append(new Date().getTime(), result.orientation.betaDeg);
@@ -423,7 +409,6 @@ function update() {
     accLines.y.append(new Date().getTime(), result.nipple.force*Math.sin(result.nipple.angleRad));
   }
 
-  
   resetSensorData();
 }
 

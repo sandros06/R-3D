@@ -7,6 +7,8 @@
 // Get the DOM element to attach to
 var hub = io.connect(window.location.origin);
 var solutionNumber = 0;
+
+// The previous data send by sensors
 var previousData = {};
 previousData.orientation = {
   counter: 0,
@@ -14,7 +16,6 @@ previousData.orientation = {
   gammaDeg: 0,
   alphaDeg: 0
 };
-
 previousData.motion = {
   counter: 0,
   acceleration: {
@@ -29,7 +30,6 @@ previousData.motion = {
   },
   interval: 0
 };
-
 previousData.nipple = {
   counter: 0,
   force: 0,

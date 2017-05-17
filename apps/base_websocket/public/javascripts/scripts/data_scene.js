@@ -5,7 +5,6 @@
  */
 
 // Fait la moyenne des data sommé par le hub 
-// TODO verif les divisions par 0 et enlevé en haut les if ici
 function getSensorData()
 {
     var result = {};
@@ -74,6 +73,7 @@ function getSensorData()
     return result;          
 }
 
+// Reset to 0 sensor data
 function resetSensorData()
 {
   motion.counter               = 0;
